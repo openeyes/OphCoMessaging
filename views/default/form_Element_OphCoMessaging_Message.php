@@ -18,7 +18,7 @@
  */
 ?>
 
-<div class="element-fields element-eyes row">	<header class="element-header">
+<div class="element-fields row">
 	<div class="element-fields">
     <?php echo $form->dropDownList($element, 'for_the_attention_of_user_id', User::model()->getListSurgeons(),array('empty'=>'- Please select -'))?>
 	<?php echo $form->dropDownList($element, 'message_type_id', CHtml::listData(OphCoMessaging_Message_MessageType::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
