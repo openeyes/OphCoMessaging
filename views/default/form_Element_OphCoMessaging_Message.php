@@ -20,8 +20,45 @@
 
 <div class="element-fields row">
 	<div class="element-fields">
-    <?php echo $form->dropDownList($element, 'for_the_attention_of_user_id', User::model()->getListSurgeons(),array('empty'=>'- Please select -'))?>
-	<?php echo $form->dropDownList($element, 'message_type_id', CHtml::listData(OphCoMessaging_Message_MessageType::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
+        <div class="row field-row">
+            <div class="large-2 column"><label>For the attention of:</label></div>
+
+            <div class="large-4 column autocomplete-row">
+                <span id="fao_user_display"><?php echo $element->for_the_attention_of_user ? $element->for_the_attention_of_user->getFullnameAndTitle() : ""; ?></span>
+                <?php
+                $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                    'name' => "find_user",
+                    'id' => "find-user",
+                    'value'=>'',
+                    'source'=>"js:function(request, response) {
+                                $.ajax({
+                                    'url': '" . Yii::app()->createUrl('/OphCoMessaging/default/userfind') . "',
+                                    'type':'GET',
+                                    'data':{'search': request.term},
+                                    'success':function(data) {
+                                        data = $.parseJSON(data);
+                                        response(data);
+                                    }
+                                });
+                            }",
+                    'options' => array(
+                        'minLength'=>'3',
+                        'select' => "js:function(event, ui) {
+                                    $('#fao_user_display').html(ui.item.label);
+                                    $('#Element_OphCoMessaging_Message_for_the_attention_of_user_id').val(ui.item.id);
+                                    $('#find-user').val('');
+                                    return false;
+                                }",
+                    ),
+                    'htmlOptions' => array(
+                        'placeholder' => 'search by name or username'
+                    ),
+                ));
+                ?>
+            </div>
+            <?php echo $form->hiddenField($element, 'for_the_attention_of_user_id'); ?>
+    </div>
+	<?php echo $form->dropDownList($element, 'message_type_id', CHtml::listData(OphCoMessaging_Message_MessageType::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'), false, array('field' => 4))?>
 	<?php echo $form->radioBoolean($element, 'urgent')?>
 	<?php echo $form->textArea($element, 'message_text', array('rows' => 6, 'cols' => 80))?>
 	</div>
