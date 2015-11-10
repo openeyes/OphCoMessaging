@@ -24,7 +24,7 @@ $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 's
 ?>
 
 <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-    'id'=>'examination-create',
+    'id'=>'messaging-create',
     'enableAjaxValidation'=>false,
     'layoutColumns' => array(
         'label' => 4,
