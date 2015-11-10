@@ -18,10 +18,8 @@
  */
 ?>
 
-<section class="element">
-	<header class="element-header">
-		<h3 class="element-title"><?php echo $element->elementType->name?></h3>
-	</header>
+<div class="element">
+
 	<div class="element-data">
 				<div class="row data-row">
 			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('for_the_attention_of_user_id'))?></div></div>
@@ -32,7 +30,7 @@
 			<div class="large-10 column end"><div class="data-value"><?php echo $element->message_type ? $element->message_type->name : 'None'?></div></div>
 		</div>
 		<div class="row data-row">
-			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('urgent'))?>:</div></div>
+			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('urgent'))?></div></div>
 			<div class="large-10 column end"><div class="data-value"><?php echo $element->urgent ? 'Yes' : 'No'?></div></div>
 		</div>
 		<div class="row data-row">
@@ -40,4 +38,4 @@
 			<div class="large-10 column end"><div class="data-value"><?php echo CHtml::encode($element->message_text)?></div></div>
 		</div>
 	</div>
-</section>
+</div>

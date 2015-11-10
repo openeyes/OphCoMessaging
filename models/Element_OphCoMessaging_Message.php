@@ -95,7 +95,7 @@ class Element_OphCoMessaging_Message extends BaseEventTypeElement
 			'event_id' => 'Event',
 			'for_the_attention_of_user_id' => 'For the attention of',
 			'message_type_id' => 'Message Type',
-			'urgent' => 'Priority',
+			'urgent' => 'Urgent',
 			'message_text' => 'Message Text',
 		);
 	}
