@@ -13,7 +13,7 @@ class OphCoMessaging_API extends \BaseAPI
 {
     public function getMenuItems($position = 1)
     {
-        
+
         return array(
             array(
             'uri' => '/OphCoMessaging/default/inbox',

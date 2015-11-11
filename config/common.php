@@ -4,7 +4,7 @@ return array(
         'menu_bar_items' => array(
             'messaging' => array(
                 'api' => 'OphCoMessaging',
-                'position' => 1
+                'position' => 3
             ),
         ),
     )
