@@ -1,4 +1,8 @@
-<?php /**
+<?php
+
+namespace OEModule\OphCoMessaging\models;
+
+/**
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
@@ -32,7 +36,7 @@
  * @property User $usermodified
  */
 
-class OphCoMessaging_Message_MessageType extends BaseActiveRecordVersioned
+class OphCoMessaging_Message_MessageType extends \BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -94,12 +98,12 @@ class OphCoMessaging_Message_MessageType extends BaseActiveRecordVersioned
 	 */
 	public function search()
 	{
-		$criteria = new CDbCriteria;
+		$criteria = new \CDbCriteria;
 
 		$criteria->compare('id', $this->id, true);
 		$criteria->compare('name', $this->name, true);
 
-		return new CActiveDataProvider(get_class($this), array(
+		return new \CActiveDataProvider(get_class($this), array(
 			'criteria' => $criteria,
 		));
 	}

@@ -17,6 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+namespace OEModule\OphCoMessaging\models;
+
 /**
  * This is the model class for table "et_ophcomessaging_message".
  *
@@ -38,7 +40,7 @@
  * @property OphCoMessaging_Message_MessageType $message_type
  */
 
-class Element_OphCoMessaging_Message extends BaseEventTypeElement
+class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -81,7 +83,7 @@ class Element_OphCoMessaging_Message extends BaseEventTypeElement
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'for_the_attention_of_user' => array(self::BELONGS_TO, 'User', 'for_the_attention_of_user_id'),
-			'message_type' => array(self::BELONGS_TO, 'OphCoMessaging_Message_MessageType', 'message_type_id'),
+			'message_type' => array(self::BELONGS_TO, 'OEModule\\OphCoMessaging\\models\\OphCoMessaging_Message_MessageType', 'message_type_id'),
 		);
 	}
 
@@ -106,16 +108,16 @@ class Element_OphCoMessaging_Message extends BaseEventTypeElement
 	 */
 	public function search()
 	{
-		$criteria = new CDbCriteria;
+		$criteria = new \CDbCriteria;
 
 		$criteria->compare('id', $this->id, true);
 		$criteria->compare('event_id', $this->event_id, true);
-		$criteria->compare('for_the_attention_of', $this->for_the_attention_of);
+		$criteria->compare('for_the_attention_of_user_id', $this->for_the_attention_of_user_id);
 		$criteria->compare('message_type_id', $this->message_type_id);
 		$criteria->compare('urgent', $this->urgent);
 		$criteria->compare('message_text', $this->message_text);
 
-		return new CActiveDataProvider(get_class($this), array(
+		return new \CActiveDataProvider(get_class($this), array(
 			'criteria' => $criteria,
 		));
 	}

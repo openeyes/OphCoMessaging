@@ -10,7 +10,7 @@ class m151110_104122_event_type_OphCoMessaging extends CDbMigration
 		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'OphCoMessaging'))->queryRow();
 
 		if (!$this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name and event_type_id=:eventTypeId', array(':name'=>'Message',':eventTypeId'=>$event_type['id']))->queryRow()) {
-			$this->insert('element_type', array('name' => 'Message','class_name' => 'Element_OphCoMessaging_Message', 'event_type_id' => $event_type['id'], 'display_order' => 1, 'required' => 1));
+			$this->insert('element_type', array('name' => 'Message','class_name' => 'OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message', 'event_type_id' => $event_type['id'], 'display_order' => 1, 'required' => 1));
 		}
 
 		$element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('event_type_id=:eventTypeId and name=:name', array(':eventTypeId'=>$event_type['id'],':name'=>'Message'))->queryRow();

@@ -45,7 +45,7 @@
                         'minLength'=>'3',
                         'select' => "js:function(event, ui) {
                                     $('#fao_user_display').html(ui.item.label);
-                                    $('#Element_OphCoMessaging_Message_for_the_attention_of_user_id').val(ui.item.id);
+                                    $('#OEModule_OphCoMessaging_models_Element_OphCoMessaging_Message_for_the_attention_of_user_id').val(ui.item.id);
                                     $('#find-user').val('');
                                     return false;
                                 }",
@@ -58,8 +58,8 @@
             </div>
             <?php echo $form->hiddenField($element, 'for_the_attention_of_user_id'); ?>
     </div>
-	<?php echo $form->dropDownList($element, 'message_type_id', CHtml::listData(OphCoMessaging_Message_MessageType::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'), false, array('field' => 4))?>
-	<?php echo $form->radioBoolean($element, 'urgent')?>
-	<?php echo $form->textArea($element, 'message_text', array('rows' => 6, 'cols' => 80))?>
+	<?php echo $form->dropDownList($element, 'message_type_id', CHtml::listData(OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'), false, array('label' => 2, 'field' => 4))?>
+	<?php echo $form->radioBoolean($element, 'urgent', null, array('label' => 2, 'field' => 4))?>
+	<?php echo $form->textArea($element, 'message_text', array('rows' => 6, 'cols' => 80), false, null ,array('label' => 2, 'field' => 6))?>
 	</div>
 </div>
