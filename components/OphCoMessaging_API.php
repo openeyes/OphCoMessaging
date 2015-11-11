@@ -13,9 +13,9 @@ use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
 class OphCoMessaging_API extends \BaseAPI
 {
 
-	public function getMenuItem() {
-
-		$user = \Yii::app()->user;
+	public function getMenuItem()
+    {
+    	$user = \Yii::app()->user;
 		$elem = new Element_OphCoMessaging_Message();
 		$elem->for_the_attention_of_user_id = $user->id;
 		$messages = $elem->search();

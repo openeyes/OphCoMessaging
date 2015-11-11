@@ -24,39 +24,23 @@
 	<div class="large-12 column">
 		<div class="panel">
 
-			<table class="grid">
+			<table class="grid" id="inbox-table">
 				<thead>
 				<tr>
-					<th>Date:</th>
-					<th>Hospital ID:</th>
-					<th>Patient name:</th>
-					<th>DOB:</th>
-					<th>Message from:</th>
-					<th>Message test:</th>
-					<th>Dismiss:</th>
+                    <th>Priority</th>
+					<th>Date</th>
+					<th>Hospital ID</th>
+					<th>Patient name</th>
+					<th>DOB</th>
+					<th>Message from</th>
+					<th>Message</th>
+					<th>Dismiss</th>
 				</tr>
 				</thead>
 				<tbody>
-				<tr>
-					<td>
-						
-					</td>
-					<td>
-						
-					</td>
-					<td>
-						
-					</td>
-					<td>
-					</td>
-					<td>
-					
-					</td>
-					<td>
-					</td>
-					<td>
-					</td>
-				</tr>
+                <?php foreach ($messages as $message) {
+                    $this->renderPartial('message_row', array('message' => $message));
+                }?>
 				</tbody>
 			</table>
 

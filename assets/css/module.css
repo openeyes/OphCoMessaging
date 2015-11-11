@@ -1,3 +1,4 @@
+/** OphCoMessaging module styles */
 /**
  * OpenEyes
  *
@@ -15,15 +16,24 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-/* line 17, ../sass/components/_event.scss */
-.event {
-  border-color: #aaaaaa;
-}
-/* line 19, ../sass/components/_event.scss */
+/* line 18, ../sass/components/_event.scss */
 .event .event-content {
-  background-image: url('../img/watermark.png?1390823684');
+  border-color: #86cdff;
+  background-image: url('../img/watermark.png?1447169116');
 }
 /* line 22, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1390823684');
+  background-image: url('../img/medium.png?1447169532');
+}
+
+/* line 1, ../sass/components/_inbox.scss */
+#inbox-table td {
+  vertical-align: top;
+}
+
+/* line 5, ../sass/components/_inbox.scss */
+#inbox-table .priority {
+  color: #f00;
+  font-weight: bold;
+  text-align: center;
 }

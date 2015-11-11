@@ -112,15 +112,21 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 
 		$criteria->compare('id', $this->id, true);
 		$criteria->compare('event_id', $this->event_id, true);
-		$criteria->compare('for_the_attention_of_user_id', $this->for_the_attention_of_user_id);
+		$criteria->compare('for_the_attention_of_user_id', $this->for_the_attention_of_user_id  );
 		$criteria->compare('message_type_id', $this->message_type_id);
 		$criteria->compare('urgent', $this->urgent);
 		$criteria->compare('message_text', $this->message_text);
+        $criteria->order = 'created_date desc';
 
 		return new \CActiveDataProvider(get_class($this), array(
 			'criteria' => $criteria,
 		));
 	}
+
+    public function getMessageDate()
+    {
+        return $this->event->event_date;
+    }
 
 
 

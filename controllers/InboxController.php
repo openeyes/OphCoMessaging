@@ -2,6 +2,8 @@
 
 namespace OEModule\OphCoMessaging\controllers;
 
+use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
+
 class InboxController extends \BaseModuleController
 {
     public $layout='//layouts/main';
@@ -23,6 +25,16 @@ class InboxController extends \BaseModuleController
 
     public function actionIndex()
     {
-        $this->render('index');
+        $user = \Yii::app()->user;
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition('for_the_attention_of_user_id = :uid');
+        $criteria->params = [':uid' => $user->id];
+        $criteria->order = 'created_date asc';
+
+        $messages = Element_OphCoMessaging_Message::model()->findAll($criteria);
+
+        $this->render('index', [
+            'messages' => $messages,
+        ]);
     }
 }
