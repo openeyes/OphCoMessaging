@@ -38,9 +38,16 @@
 				</tr>
 				</thead>
 				<tbody>
-                <?php foreach ($messages as $message) {
-                    $this->renderPartial('message_row', array('message' => $message));
-                }?>
+                <?php
+                if (count($messages)) {
+                    foreach ($messages as $message) {
+                        $this->renderPartial('message_row', array('message' => $message));
+                    }
+                } else {?>
+                <tr>
+                    <td colspan="8" style="text-align: center;">You have no messages at this time.</td>
+                </tr>
+                <?php } ?>
 				</tbody>
 			</table>
 
