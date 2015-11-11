@@ -8,17 +8,23 @@
 
 namespace OEModule\OphCoMessaging\components;
 
+use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
 
 class OphCoMessaging_API extends \BaseAPI
 {
-    public function getMenuItems($position = 1)
-    {
 
-        return array(
-            array(
-            'uri' => '/OphCoMessaging/default/inbox',
+	public function getMenuItem() {
+
+		$user = \Yii::app()->user;
+		$elem = new Element_OphCoMessaging_Message();
+		$elem->for_the_attention_of_user_id = $user->id;
+		$messages = $elem->search();
+		// $messages = $elem->searchForUserMessages($user->id);
+
+		return array(
             'title' => 'Messages',
-            'position' => $position
-        ));
-    }
+			'uri' => '/OphCoMessaging/Inbox',
+			'messageCount' => $messages->getItemCount()
+		);
+	}
 }
