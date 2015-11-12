@@ -21,12 +21,19 @@ class OphCoMessaging_API extends \BaseAPI
         $criteria->params = array(':uid' => $user->id);
         $criteria->order = 'created_date asc';
 
-        $message_count = Element_OphCoMessaging_Message::model()->count($criteria);
+        $messages = Element_OphCoMessaging_Message::model()->findAll($criteria);
+        $containsUrgentMessage = false;
+        foreach ($messages as $message) {
+            if ($message['urgent']) {
+                $containsUrgentMessage = true;
+            }
+        }
 
 		return array(
             'title' => 'Messages',
 			'uri' => '/OphCoMessaging/Inbox',
-			'messageCount' => $message_count
+			'messageCount' => count($messages),
+            'containsUrgentMessage' => $containsUrgentMessage
 		);
 	}
 }
