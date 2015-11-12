@@ -18,7 +18,7 @@ class OphCoMessaging_API extends \BaseAPI
         $user = \Yii::app()->user;
         $criteria = new \CDbCriteria();
         $criteria->addCondition('for_the_attention_of_user_id = :uid');
-        $criteria->params = [':uid' => $user->id];
+        $criteria->params = array(':uid' => $user->id);
         $criteria->order = 'created_date asc';
 
         $message_count = Element_OphCoMessaging_Message::model()->count($criteria);

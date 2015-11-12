@@ -28,13 +28,13 @@ class InboxController extends \BaseModuleController
         $user = \Yii::app()->user;
         $criteria = new \CDbCriteria();
         $criteria->addCondition('for_the_attention_of_user_id = :uid');
-        $criteria->params = [':uid' => $user->id];
+        $criteria->params = array(':uid' => $user->id);
         $criteria->order = 'created_date asc';
 
         $messages = Element_OphCoMessaging_Message::model()->findAll($criteria);
 
-        $this->render('index', [
+        $this->render('index', array(
             'messages' => $messages,
-        ]);
+        ));
     }
 }
