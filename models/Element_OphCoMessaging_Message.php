@@ -29,6 +29,7 @@ namespace OEModule\OphCoMessaging\models;
  * @property integer $message_type_id
  * @property integer $urgent
  * @property string $message_text
+ * @property integer $marked_as_read
  *
  * The followings are the available model relations:
  *
@@ -65,9 +66,9 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 	public function rules()
 	{
 		return array(
-			array('event_id, for_the_attention_of, message_type_id, urgent, message_text, ', 'safe'),
+			array('event_id, for_the_attention_of, message_type_id, urgent, message_text, marked_as_read', 'safe'),
 			array('for_the_attention_of_user_id, message_type_id, message_text, ', 'required'),
-			array('id, event_id, for_the_attention_of_user-id, message_type_id, urgent, message_text, ', 'safe', 'on' => 'search'),
+			array('id, event_id, for_the_attention_of_user-id, message_type_id, urgent, message_text, marked_as_read', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -98,6 +99,7 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 			'for_the_attention_of_user_id' => 'For the attention of',
 			'message_type_id' => 'Message Type',
 			'urgent' => 'Urgent',
+			'marked_as_read' => 'Mark as read',
 			'message_text' => 'Message Text',
 		);
 	}
@@ -115,6 +117,7 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 		$criteria->compare('for_the_attention_of_user_id', $this->for_the_attention_of_user_id  );
 		$criteria->compare('message_type_id', $this->message_type_id);
 		$criteria->compare('urgent', $this->urgent);
+		$criteria->compare('marked_as_read', $this->marked_as_read);
 		$criteria->compare('message_text', $this->message_text);
         $criteria->order = 'created_date desc';
 

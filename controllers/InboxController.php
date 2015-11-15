@@ -17,7 +17,7 @@ class InboxController extends \BaseModuleController
     {
         return array(
             array('allow',
-                'actions' => array('index'),
+                'actions' => array('index', 'delete'),
                 'roles' => array('OprnLogin'),
             )
         );
@@ -28,7 +28,8 @@ class InboxController extends \BaseModuleController
         $user = \Yii::app()->user;
         $criteria = new \CDbCriteria();
         $criteria->addCondition('for_the_attention_of_user_id = :uid');
-        $criteria->params = array(':uid' => $user->id);
+        $criteria->addCondition('marked_as_read = :read');
+        $criteria->params = array(':uid' => $user->id, ':read' => false);
         $criteria->order = 'created_date asc';
 
         $messages = Element_OphCoMessaging_Message::model()->findAll($criteria);
@@ -37,4 +38,17 @@ class InboxController extends \BaseModuleController
             'messages' => $messages,
         ));
     }
+
+    public function actionDelete($id)
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition('id = :id');
+        $criteria->params = array(':id' => $id);
+
+        $message = Element_OphCoMessaging_Message::model()->find($criteria);
+        $message->updateByPk($id, array('marked_as_read' => 1));
+        $this->redirect(array('/OphCoMessaging/Inbox'));
+
+    }
+
 }

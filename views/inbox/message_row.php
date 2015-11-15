@@ -21,5 +21,6 @@
         <?= strlen($message->message_text) > 50 ? Yii::app()->format->Ntext(substr($message->message_text, 0, 50) . '...') : Yii::app()->format->Ntext($message->message_text); ?>
     </td>
     <td>
+        <a href="<?= Yii::app()->createURL("/OphCoMessaging/Inbox/delete/", array('id' => $message->id)); ?>">Delete </a>
     </td>
 </tr>

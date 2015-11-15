@@ -34,7 +34,7 @@
 					<th>DOB</th>
 					<th>Message from</th>
 					<th>Message</th>
-					<th>Dismiss</th>
+					<th>Delete</th>
 				</tr>
 				</thead>
 				<tbody>

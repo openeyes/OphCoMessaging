@@ -34,6 +34,10 @@
 			<div class="large-10 column end"><div class="data-value"><?php echo $element->urgent ? 'Yes' : 'No'?></div></div>
 		</div>
 		<div class="row data-row">
+			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('marked_as_read'))?></div></div>
+			<div class="large-10 column end"><div class="data-value"><?php echo $element->marked_as_read ? 'Yes' : 'No'?></div></div>
+		</div>
+		<div class="row data-row">
 			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('message_text'))?></div></div>
 			<div class="large-10 column end"><div class="data-value"><?= Yii::app()->format->Ntext($element->message_text)?></div></div>
 		</div>
