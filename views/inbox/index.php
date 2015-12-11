@@ -41,7 +41,7 @@
                 <?php
                 if (count($messages)) {
                     foreach ($messages as $message) {
-                        $this->renderPartial('message_row', array('message' => $message));
+                        $this->renderPartial('OphCoMessaging.views.inbox.message_row', array('message' => $message));
                     }
                 } else {?>
                 <tr>
