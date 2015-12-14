@@ -2,8 +2,14 @@
   vertical-align: top;
 }
 
-#inbox-table .priority {
+#inbox-table span.priority {
   color: #f00;
-  font-weight: bold;
-  text-align: center;
+}
+
+#inbox-table .date {
+  white-space: nowrap;
+}
+
+#inbox-table .summary {
+  font-size: 0.8em;
 }

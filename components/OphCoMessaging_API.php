@@ -49,14 +49,33 @@ class OphCoMessaging_API extends \BaseAPI
             $user = \Yii::app()->user;
         }
 
+        $sort = new \CSort();
+
+        $sort->attributes = array(
+            'priority' => array('asc' => 'urgent asc',
+                                'desc' => 'urgent desc'),
+            'event_date' => array('asc' => 'event.created_date asc',
+                                'desc' => 'event.created_date desc'),
+            'patient_name' => array('asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
+                                    'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc'),
+            'hos_num' => array('asc' => 'patient.hos_num asc',
+                                'desc' => 'patient.hos_num desc'),
+            'dob' => array('asc' => 'patient.dob asc',
+                            'desc' => 'patient.dob desc'),
+            'user' => array('asc' => 'lower(for_the_attention_of_user.last_name) asc, lower(for_the_attention_of_user.first_name) asc',
+                            'desc' => 'lower(for_the_attention_of_user.last_name) desc, lower(for_the_attention_of_user.first_name) desc')
+        );
+
+        $sort->defaultOrder = array('event_date' => \CSort::SORT_DESC);
+
         $dp = new \CActiveDataProvider('OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
             array(
+                'sort' => $sort,
                 'criteria' => array(
                     'together' => true,
-                    'with' => array('event', 'for_the_attention_of_user', 'message_type'),
+                    'with' => array('event', 'for_the_attention_of_user', 'message_type', 'event.episode', 'event.episode.patient', 'event.episode.patient.contact'),
                     'condition' => 'for_the_attention_of_user_id = :uid AND marked_as_read = :read',
                     'params' => array(':uid' => $user->id, ':read' => false),
-                    'order' => 'event.created_date desc'
                 ),
                 'pagination' => array(
                     'pageSize' => 2
@@ -69,6 +88,8 @@ class OphCoMessaging_API extends \BaseAPI
         $criteria->order = 'created_date asc';
 
         $messages = Element_OphCoMessaging_Message::model()->findAll($criteria);
+
+        \Yii::app()->getAssetManager()->registerCssFile('module.css', 'application.modules.OphCoMessaging.assets.css');
 
         \Yii::app()->controller->renderPartial('OphCoMessaging.views.inbox.grid', array(
             'messages' => $messages,
