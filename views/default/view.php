@@ -22,6 +22,15 @@ $this->beginContent('//patient/event_container');
 
 <?php
 // Event actions
+if ($this->canMarkRead()) {
+    $this->event_actions[] = EventAction::link('Mark Read',
+        Yii::app()->createUrl($this->getModule()->name . '/Default/markRead/'.$this->event->id), null, array('class' => 'warning button small'));
+}
+elseif ($this->canMarkUnread()) {
+    $this->event_actions[] = EventAction::link('Mark Unread',
+        Yii::app()->createUrl($this->getModule()->name . '/Default/markUnread/'.$this->event->id), null, array('class' => 'secondary button small'));
+}
+
 if ($this->checkPrintAccess()) {
     $this->event_actions[] = EventAction::button('Print', 'print',null,array('class'=>'button small'));
 }

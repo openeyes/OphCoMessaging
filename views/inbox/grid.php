@@ -29,7 +29,7 @@ $this->widget('zii.widgets.grid.CGridView', array(
         ),
         array(
             'id' => 'hos_num',
-            'header' => $dp->getSort()->link('hos_num', 'Hospital Number', array('class' => 'sort-link')),
+            'header' => $dp->getSort()->link('hos_num', 'Hospital No.', array('class' => 'sort-link')),
             'value' => '$data->event->episode->patient->hos_num'
         ),
         array(
@@ -64,7 +64,9 @@ $this->widget('zii.widgets.grid.CGridView', array(
             'buttons' => array(
                 'mark' => array(
                     'options' => array('title' => 'Mark as read'),
-                    'url' => 'Yii::app()->createURL("/OphCoMessaging/Inbox/delete/", array("id" => $data->id))',
+                    'url' => 'Yii::app()->createURL("/OphCoMessaging/Default/markRead/", array(
+                        "id" => $data->event->id,
+                        "returnUrl" => \Yii::app()->request->requestUri))',
                     'label' => '<button class="warning small">read</button>',
 
                 )

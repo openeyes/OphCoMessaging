@@ -17,7 +17,7 @@ class InboxController extends \BaseModuleController
     {
         return array(
             array('allow',
-                'actions' => array('index', 'delete'),
+                'actions' => array('index', 'markread', 'markunread'),
                 'roles' => array('OprnLogin'),
             )
         );
@@ -39,7 +39,7 @@ class InboxController extends \BaseModuleController
         ));
     }
 
-    public function actionDelete($id)
+    public function actionMarkRead($id)
     {
         $criteria = new \CDbCriteria();
         $criteria->addCondition('id = :id');
@@ -48,7 +48,6 @@ class InboxController extends \BaseModuleController
         $message = Element_OphCoMessaging_Message::model()->find($criteria);
         $message->updateByPk($id, array('marked_as_read' => 1));
         $this->redirect(array('/OphCoMessaging/Inbox'));
-
     }
 
 }
