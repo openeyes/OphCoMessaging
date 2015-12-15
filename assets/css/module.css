@@ -20,11 +20,16 @@
 /* line 18, ../sass/components/_event.scss */
 .event .event-content {
   border-color: #86cdff;
-  background-image: url('../img/watermark.png?1449840459');
+  background-image: url('../img/watermark.png?1450171523');
 }
 /* line 22, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1449840459');
+  background-image: url('../img/medium.png?1450171523');
+}
+
+/* line 27, ../sass/components/_event.scss */
+.urgent {
+  color: #f33;
 }
 
 /* line 1, ../sass/components/_inbox.scss */
@@ -34,7 +39,7 @@
 
 /* line 5, ../sass/components/_inbox.scss */
 #inbox-table span.priority {
-  color: #f00;
+  color: #f33;
 }
 
 /* line 9, ../sass/components/_inbox.scss */
