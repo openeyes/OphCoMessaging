@@ -46,19 +46,19 @@ class DefaultController extends \BaseEventTypeController
         $res = array();
         if (\Yii::app()->request->isAjaxRequest && !empty($_REQUEST['search'])) {
             $criteria = new \CDbCriteria;
-            $criteria->compare("LOWER(username)", strtolower($_REQUEST['search']),true, 'OR');
-            $criteria->compare("LOWER(first_name)",strtolower($_REQUEST['search']),true, 'OR');
-            $criteria->compare("LOWER(last_name)",strtolower($_REQUEST['search']),true, 'OR');
+            $criteria->compare("LOWER(username)", strtolower($_REQUEST['search']), true, 'OR');
+            $criteria->compare("LOWER(first_name)", strtolower($_REQUEST['search']), true, 'OR');
+            $criteria->compare("LOWER(last_name)", strtolower($_REQUEST['search']), true, 'OR');
             $words = explode(" ", $_REQUEST['search']);
             if (count($words) > 1) {
                 // possibly slightly verbose approach to checking first and last name combinations
                 // for searches
                 $first_criteria = new \CDbCriteria();
-                $first_criteria->compare("LOWER(first_name)", strtolower($words[0]),true);
-                $first_criteria->compare("LOWER(last_name)", strtolower(implode(" ", array_slice($words,1,count($words)-1))),true);
+                $first_criteria->compare("LOWER(first_name)", strtolower($words[0]), true);
+                $first_criteria->compare("LOWER(last_name)", strtolower(implode(" ", array_slice($words, 1, count($words) - 1))), true);
                 $last_criteria = new \CDbCriteria();
-                $last_criteria->compare("LOWER(first_name)", strtolower($words[count($words)-1]),true);
-                $last_criteria->compare("LOWER(last_name)", strtolower(implode(" ", array_slice($words,0,count($words)-2))),true);
+                $last_criteria->compare("LOWER(first_name)", strtolower($words[count($words) - 1]), true);
+                $last_criteria->compare("LOWER(last_name)", strtolower(implode(" ", array_slice($words, 0, count($words) - 2))), true);
                 $first_criteria->mergeWith($last_criteria, 'OR');
                 $criteria->mergeWith($first_criteria, 'OR');
             }
@@ -89,16 +89,27 @@ class DefaultController extends \BaseEventTypeController
      * Mark the event message as read
      *
      * @param $id
-     * @throws \CHttpException
+     * @throws \Exception
      */
     public function actionMarkRead($id)
     {
         $el = $this->getMessageElement();
-        $el->marked_as_read = true;
-        $el->save();
-        $this->event->audit('event', 'marked read');
 
-        \Yii::app()->user->setFlash('success', "<a href=\"" . $this->getEventViewUrl() . "\">{$this->event_type->name}</a> marked as read.");
+        $el->marked_as_read = true;
+        $transaction = \Yii::app()->db->beginTransaction();
+        try {
+            $el->save();
+            $this->updateEvent();
+
+            $this->event->audit('event', 'marked read');
+
+            \Yii::app()->user->setFlash('success', "<a href=\"" . $this->getEventViewUrl() . "\">{$this->event_type->name}</a> marked as read.");
+
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollback();
+            throw $e;
+        }
 
         $this->redirectAfterAction();
     }
@@ -123,11 +134,20 @@ class DefaultController extends \BaseEventTypeController
     {
         $el = $this->getMessageElement();
         $el->marked_as_read = false;
-        $el->save();
-        $this->event->audit('event', 'marked unread');
+        $transaction = \Yii::app()->db->beginTransaction();
+        try {
+            $el->save();
+            $this->updateEvent();
 
-        \Yii::app()->user->setFlash('success', "<a href=\"" . $this->getEventViewUrl() . "\">{$this->event_type->name}</a> marked as unread.");
+            $this->event->audit('event', 'marked unread');
 
+            \Yii::app()->user->setFlash('success', "<a href=\"" . $this->getEventViewUrl() . "\">{$this->event_type->name}</a> marked as unread.");
+
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollback();
+            throw $e;
+        }
         $this->redirectAfterAction();
     }
 
@@ -186,7 +206,8 @@ class DefaultController extends \BaseEventTypeController
     {
         $el = $this->getMessageElement();
         if ($this->isIntendedRecipient()
-            && !$el->marked_as_read) {
+            && !$el->marked_as_read
+        ) {
             return true;
         }
 
@@ -200,10 +221,50 @@ class DefaultController extends \BaseEventTypeController
     {
         $el = $this->getMessageElement();
         if ($this->isIntendedRecipient()
-            && $el->marked_as_read) {
+            && $el->marked_as_read
+        ) {
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Extend the parent method to set event issue data based on user selection
+     */
+    protected function updateEventInfo()
+    {
+        parent::updateEventInfo();
+        $this->updateEventIssues();
+    }
+
+    /**
+     * Set the urgent issue (or otherwise) at the event level
+     */
+    protected function updateEventIssues()
+    {
+        // This logic is slightly wonky because there's not an interface to check for
+        // a specific issue on the event, but the assumption is that no issue is raised on the
+        // message event asides from urgency
+        if ($this->getMessageElement()->urgent) {
+            if (!$this->event->hasIssue()) {
+                $this->event->addIssue('Urgent');
+            }
+        }
+        else {
+            if ($this->event->hasIssue()) {
+                $this->event->deleteIssue('Urgent');
+            }
+        }
+    }
+
+    /**
+     * Set the event info text without the open_elements attribute being set
+     */
+    protected function updateEvent()
+    {
+        $this->event->info = $this->getMessageElement()->infotext;
+        $this->updateEventIssues();
+        $this->event->save();
     }
 }

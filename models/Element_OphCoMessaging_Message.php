@@ -131,5 +131,12 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
         return $this->event->event_date;
     }
 
+    /**
+     * Info Text set based on the current attributes
+     */
+    public function getInfotext()
+    {
+        return $this->marked_as_read ? "read" : "unread";
+    }
 }
 ?>
