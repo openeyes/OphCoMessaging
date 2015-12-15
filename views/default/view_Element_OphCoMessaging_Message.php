@@ -21,21 +21,16 @@
 <div class="element">
 
 	<div class="element-data">
-				<div class="row data-row">
+        <div class="row data-row">
 			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('for_the_attention_of_user_id'))?></div></div>
-			<div class="large-10 column end"><div class="data-value"><?php echo $element->for_the_attention_of_user->getFullnameAndTitle()?></div></div>
+			<div class="large-10 column end"><div class="data-value <?= $element->urgent ? " urgent":""?>"><?php echo $element->for_the_attention_of_user->getFullnameAndTitle();
+                    if ($element->urgent) { echo " <span class=\"priority fa fa-exclamation\"></span>"; }
+            ?></div></div>
+
 		</div>
 		<div class="row data-row">
 			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('message_type_id'))?></div></div>
 			<div class="large-10 column end"><div class="data-value"><?php echo $element->message_type ? $element->message_type->name : 'None'?></div></div>
-		</div>
-		<div class="row data-row">
-			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('urgent'))?></div></div>
-			<div class="large-10 column end"><div class="data-value"><?php echo $element->urgent ? 'Yes' : 'No'?></div></div>
-		</div>
-		<div class="row data-row">
-			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('marked_as_read'))?></div></div>
-			<div class="large-10 column end"><div class="data-value"><?php echo $element->marked_as_read ? 'Yes' : 'No'?></div></div>
 		</div>
 		<div class="row data-row">
 			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('message_text'))?></div></div>

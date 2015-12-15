@@ -59,8 +59,7 @@
             <?php echo $form->hiddenField($element, 'for_the_attention_of_user_id'); ?>
     </div>
 	<?php echo $form->dropDownList($element, 'message_type_id', CHtml::listData(OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'), false, array('label' => 2, 'field' => 4))?>
-	<?php echo $form->radioBoolean($element, 'urgent', null, array('label' => 2, 'field' => 4))?>
-    <?php echo $form->radioBoolean($element, 'marked_as_read', null, array('label' => 2, 'field' => 4))?>
-	<?php echo $form->textArea($element, 'message_text', array('rows' => 6, 'cols' => 80), false, null ,array('label' => 2, 'field' => 6))?>
+	<?php echo $form->checkbox($element, 'urgent', array(), array('label' => 2, 'field' => 1))?>
+    <?php echo $form->textArea($element, 'message_text', array('rows' => 6, 'cols' => 80), false, null ,array('label' => 2, 'field' => 6))?>
 	</div>
 </div>

@@ -97,10 +97,10 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 			'id' => 'ID',
 			'event_id' => 'Event',
 			'for_the_attention_of_user_id' => 'For the attention of',
-			'message_type_id' => 'Message Type',
+			'message_type_id' => 'Type',
 			'urgent' => 'Urgent',
 			'marked_as_read' => 'Mark as read',
-			'message_text' => 'Message Text',
+			'message_text' => 'Text',
 		);
 	}
 
@@ -131,12 +131,5 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
         return $this->event->event_date;
     }
 
-
-
-	protected function afterSave()
-	{
-
-		return parent::afterSave();
-	}
 }
 ?>

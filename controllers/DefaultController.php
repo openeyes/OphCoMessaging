@@ -28,6 +28,16 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * Convenience wrapper to retrieve event view URL (this should probably be somewhere in core)
+     *
+     * @return mixed
+     */
+    public function getEventViewUrl()
+    {
+        return \Yii::app()->createUrl('/' . $this->getModule()->name . '/Default/view/' . $this->event->id);
+    }
+
+    /**
      * Duplicated from the admin controller to give a user list
      * @TODO: There's a method on the UserController that could be used, so would be worth consolidating)
      */
@@ -88,6 +98,8 @@ class DefaultController extends \BaseEventTypeController
         $el->save();
         $this->event->audit('event', 'marked read');
 
+        \Yii::app()->user->setFlash('success', "<a href=\"" . $this->getEventViewUrl() . "\">{$this->event_type->name}</a> marked as read.");
+
         $this->redirectAfterAction();
     }
 
@@ -114,6 +126,8 @@ class DefaultController extends \BaseEventTypeController
         $el->save();
         $this->event->audit('event', 'marked unread');
 
+        \Yii::app()->user->setFlash('success', "<a href=\"" . $this->getEventViewUrl() . "\">{$this->event_type->name}</a> marked as unread.");
+
         $this->redirectAfterAction();
     }
 
@@ -124,7 +138,7 @@ class DefaultController extends \BaseEventTypeController
     {
         if (!$return_url = @$_GET['returnUrl']) {
             if (!$return_url = @$_POST['returnUrl']) {
-                $return_url = \Yii::app()->createUrl('/' . $this->getModule()->name . '/Default/view/' . $this->event->id);
+                $return_url = $this->getEventViewUrl();
             }
         }
         $this->redirect($return_url);
