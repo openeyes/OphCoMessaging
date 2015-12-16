@@ -24,6 +24,7 @@
             <div class="large-2 column"><label>For the attention of:</label></div>
 
             <div class="large-4 column autocomplete-row">
+                <span id="fao-field">
                 <span id="fao_user_display"><?php echo $element->for_the_attention_of_user ? $element->for_the_attention_of_user->getFullnameAndTitle() : ""; ?></span>
                 <?php
                 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
@@ -55,6 +56,7 @@
                     ),
                 ));
                 ?>
+                </span>
             </div>
             <?php echo $form->hiddenField($element, 'for_the_attention_of_user_id'); ?>
     </div>

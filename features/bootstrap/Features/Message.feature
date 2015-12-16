@@ -16,3 +16,7 @@ Feature: Messaging
     And I Save the Event
 
     Then the application returns a validation error containing 'For the attention of cannot be blank.'
+
+    And the application returns a validation error containing 'Type cannot be blank.'
+
+    And the application returns a validation error containing 'Text cannot be blank.'

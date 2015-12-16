@@ -60,6 +60,11 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 		return 'et_ophcomessaging_message';
 	}
 
+
+    protected $errorExceptions = array(
+        'OEModule_OphCoMessaging_models_Element_OphCoMessaging_Message_for_the_attention_of_user_id' => 'fao-field'
+    );
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */
