@@ -83,6 +83,14 @@ class DefaultController extends \BaseEventTypeController
         echo \CJSON::encode($res);
     }
 
+    public function initActionView()
+    {
+        parent::initActionView();
+        if (@$_GET['comment']) {
+            $this->show_comment_form = true;
+        }
+    }
+
     /**
      * Set up event etc on the controller
      *

@@ -60,15 +60,28 @@ $this->widget('zii.widgets.grid.CGridView', array(
         array(
             'header' => 'Actions',
             'class' => 'CButtonColumn',
-            'template' => '{mark}',
+            'template' => '{mark}{reply}',
             'buttons' => array(
                 'mark' => array(
                     'options' => array('title' => 'Mark as read'),
                     'url' => 'Yii::app()->createURL("/OphCoMessaging/Default/markRead/", array(
                         "id" => $data->event->id,
                         "returnUrl" => \Yii::app()->request->requestUri))',
-                    'label' => '<button class="warning small">read</button>',
+                    'label' => '<button class="warning small">dismiss</button>',
+                    'visible' => function($row, $data) {
+                        return !$data->message_type->reply_required;
+                    }
 
+                ),
+                'reply' => array(
+                    'options' => array('title' => 'Add a comment'),
+                    'url' => 'Yii::app()->createURL("/OphCoMessaging/Default/view/", array(
+                                        "id" => $data->event->id,
+                                        "comment" => 1))',
+                    'label' => '<button class="secondary small">reply</button>',
+                    'visible' => function($row, $data) {
+                        return $data->message_type->reply_required;
+                    }
                 )
             )
         )
