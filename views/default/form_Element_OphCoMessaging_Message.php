@@ -21,43 +21,47 @@
 <div class="element-fields row">
 	<div class="element-fields">
         <div class="row field-row">
-            <div class="large-2 column"><label>For the attention of:</label></div>
+            <div class="large-2 column"><label for="find-user">For the attention of:  <span class="has-tooltip fa fa-info-circle" data-tooltip="Cannot be changed after message creation."></span></label></div>
 
-            <div class="large-4 column autocomplete-row">
-                <span id="fao-field">
-                <span id="fao_user_display"><?php echo $element->for_the_attention_of_user ? $element->for_the_attention_of_user->getFullnameAndTitle() : ""; ?></span>
-                <?php
-                $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                    'name' => "find_user",
-                    'id' => "find-user",
-                    'value'=>'',
-                    'source'=>"js:function(request, response) {
-                                $.ajax({
-                                    'url': '" . Yii::app()->createUrl('/OphCoMessaging/default/userfind') . "',
-                                    'type':'GET',
-                                    'data':{'search': request.term},
-                                    'success':function(data) {
-                                        data = $.parseJSON(data);
-                                        response(data);
-                                    }
-                                });
-                            }",
-                    'options' => array(
-                        'minLength'=>'3',
-                        'select' => "js:function(event, ui) {
-                                    $('#fao_user_display').html(ui.item.label);
-                                    $('#OEModule_OphCoMessaging_models_Element_OphCoMessaging_Message_for_the_attention_of_user_id').val(ui.item.id);
-                                    $('#find-user').val('');
-                                    return false;
+            <?php if ($element->isNewRecord) { ?>
+                <div class="large-4 column autocomplete-row">
+                    <span id="fao-field">
+                    <span id="fao_user_display"><?php echo $element->for_the_attention_of_user ? $element->for_the_attention_of_user->getFullnameAndTitle() : ""; ?></span>
+                    <?php
+                    $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                        'name' => "find_user",
+                        'id' => "find-user",
+                        'value'=>'',
+                        'source'=>"js:function(request, response) {
+                                    $.ajax({
+                                        'url': '" . Yii::app()->createUrl('/OphCoMessaging/default/userfind') . "',
+                                        'type':'GET',
+                                        'data':{'search': request.term},
+                                        'success':function(data) {
+                                            data = $.parseJSON(data);
+                                            response(data);
+                                        }
+                                    });
                                 }",
-                    ),
-                    'htmlOptions' => array(
-                        'placeholder' => 'search by name or username'
-                    ),
-                ));
-                ?>
-                </span>
-            </div>
+                        'options' => array(
+                            'minLength'=>'3',
+                            'select' => "js:function(event, ui) {
+                                        $('#fao_user_display').html(ui.item.label);
+                                        $('#OEModule_OphCoMessaging_models_Element_OphCoMessaging_Message_for_the_attention_of_user_id').val(ui.item.id);
+                                        $('#find-user').val('');
+                                        return false;
+                                    }",
+                        ),
+                        'htmlOptions' => array(
+                            'placeholder' => 'search by name or username'
+                        ),
+                    ));
+                    ?>
+                    </span>
+                </div>
+                <?php } else { ?>
+                <div class="large-4 column"><div class="data-value"><?= $element->for_the_attention_of_user->getFullnameAndTitle(); ?></div></div>
+            <?php } ?>
             <?php echo $form->hiddenField($element, 'for_the_attention_of_user_id'); ?>
     </div>
 	<?php echo $form->dropDownList($element, 'message_type_id', CHtml::listData(OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'), false, array('label' => 2, 'field' => 4))?>

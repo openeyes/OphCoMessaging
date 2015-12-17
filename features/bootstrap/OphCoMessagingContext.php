@@ -135,5 +135,35 @@ class OphCoMessagingContext extends PageObjectContext
         $message->checkDisplayMessageIs($arg1);
     }
 
+    /**
+     * @Then /^I Edit the displayed event$/
+     */
+    public function iEditTheDisplayedEvent()
+    {
+        $message = $this->getPage("OphCoMessaging");
+        $message->clickEditLink();
+    }
+
+    /**
+     * @Given /^I confirm I cannot change the FAO user$/
+     */
+    public function iConfirmICannotChangeTheFAOUser()
+    {
+        $message = $this->getPage("OphCoMessaging");
+        $message->checkNoUserSearchAvailable();
+    }
+
+    /**
+     * @Then /^I Save the Message$/
+     */
+    public function iSaveTheMessage()
+    {
+        /**
+         * @var OphCoMessaging
+         */
+        $message = $this->getPage("OphCoMessaging");
+        $message->saveEvent();
+    }
+
 
 }

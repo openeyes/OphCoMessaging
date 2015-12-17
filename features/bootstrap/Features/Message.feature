@@ -39,5 +39,19 @@ Feature: Messaging
 
     And I confirm that the message text is "This is a sample message"
 
+    Then I Edit the displayed event
+
+    And I confirm I cannot change the FAO user
+
+    And I type "This is a different sample message" into the message box
+
+    Then I Save the Message
+
+    And I confirm that fao user is "Level Three"
+
+    And I confirm the message type is "General"
+
+    And I confirm that the message text is "This is a different sample message"
+
 
 

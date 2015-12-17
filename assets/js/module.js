@@ -24,26 +24,24 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
-	$('select.populate_textarea').unbind('change').change(function() {
-		if ($(this).val() != '') {
-			var cLass = $(this).parent().parent().parent().attr('class').match(/Element.*/);
-			var el = $('#'+cLass+'_'+$(this).attr('id'));
-			var currentText = el.text();
-			var newText = $(this).children('option:selected').text();
-
-			if (currentText.length == 0) {
-				el.text(ucfirst(newText));
-			} else {
-				el.text(currentText+', '+newText);
-			}
-		}
-	});
+    var toolTip = new OpenEyes.UI.Tooltip({
+        offset: {
+            x: 10,
+            y: 10
+        },
+        viewPortOffset: {
+            x: 0,
+            y: 32 // height of sticky footer
+        }
+    });
+    $(this).on('mouseover', '.has-tooltip', function() {
+        if ($(this).data('tooltip').length) {
+            toolTip.setContent($(this).data('tooltip'));
+            var offsets = $(this).offset();
+            toolTip.show(offsets.left, offsets.top);
+        }
+    }).mouseout(function (e) {
+        toolTip.hide();
+    });
 });
 
-function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }
-
-function eDparameterListener(_drawing) {
-	if (_drawing.selectedDoodle != null) {
-		// handle event
-	}
-}

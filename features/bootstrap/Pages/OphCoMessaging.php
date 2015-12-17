@@ -33,6 +33,9 @@ class OphCoMessaging extends OpenEyesPage
         'save' => array (
             'xpath' => "//*[@id='et_save']"
         ),
+        'edit' => array (
+            'xpath' => "//ul[contains(@class, 'event-actions')]//a[text()='Edit']"
+        ),
         'fao_display' => array(
             'xpath' => "//section[contains(@class,'Element_OphCoMessaging_Message')]//div[@class='row data-row'][1]//div[contains(@class,'data-value')]"
         ),
@@ -192,5 +195,17 @@ class OphCoMessaging extends OpenEyesPage
     public function checkDisplayMessageIs($message)
     {
         $this->assertEquals($message, $this->getElement('message_text_display')->getText());
+    }
+
+    public function clickEditLink()
+    {
+        $this->getElement('edit')->click();
+    }
+
+    public function checkNoUserSearchAvailable()
+    {
+        if ($this->getElement('fao_search')->isValid()) {
+            throw new BehaviorException("FAO search still visible");
+        }
     }
 }
