@@ -27,4 +27,40 @@ class OphCoMessaging_Message_Comment extends \BaseActiveRecordVersioned
     {
         return 'ophcomessaging_message_comment';
     }
+
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        return array(
+            array('comment_text', 'safe'),
+            array('comment_text', 'required'),
+            array('id, comment_text', 'safe', 'on' => 'search'),
+        );
+    }
+
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        return array(
+            'element' => array(self::BELONGS_TO, 'OEModule\\OphCoMessaging\\models\\Element_OphCoMessaging_Message', 'element_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+        );
+    }
+
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'comment_text' => 'Comment Text',
+        );
+    }
+
+
 }

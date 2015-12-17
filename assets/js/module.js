@@ -43,5 +43,16 @@ $(document).ready(function() {
     }).mouseout(function (e) {
         toolTip.hide();
     });
+
+    $(this).on('click', '#add-message-comment', function() {
+        $('#new-comment-form').toggle();
+        $('#add-comment-button-container').toggle();
+    });
+
+    $(this).on('click', '#new-comment-cancel', function(e) {
+        e.preventDefault();
+        $('#new-comment-form').toggle();
+        $('#add-comment-button-container').toggle();
+    });
 });
 

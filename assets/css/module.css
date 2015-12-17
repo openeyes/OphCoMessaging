@@ -24,12 +24,17 @@
 }
 /* line 22, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1450171523');
+  background-image: url('../img/medium.png?1450177641');
 }
 
 /* line 27, ../sass/components/_event.scss */
 .urgent {
   color: #f33;
+}
+
+/* line 31, ../sass/components/_event.scss */
+.comment {
+  font-style: italic;
 }
 
 /* line 1, ../sass/components/_inbox.scss */

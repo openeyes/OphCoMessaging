@@ -18,6 +18,13 @@
  */
 ?>
 
+<?php
+if (!@$comment) {
+    // ensure we have base comment object
+    $comment = new \OEModule\OphCoMessaging\models\OphCoMessaging_Message_Comment();
+}
+?>
+
 <div class="element">
 
 	<div class="element-data">
@@ -36,5 +43,41 @@
 			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('message_text'))?></div></div>
 			<div class="large-10 column end"><div class="data-value"><?= Yii::app()->format->Ntext($element->message_text)?></div></div>
 		</div>
+        <?= $element->comments ? "<hr />" : "" ?>
+        <?php foreach ($element->comments as $comment) {?>
+            <div class="row data-row comment">
+                <div class="large-2 column"><div class="data-label">@<?php echo Helper::convertMySQL2NHS($comment->created_date) ?></div></div>
+                <div class="large-10 column end"><div class="data-value"><?= Yii::app()->format->Ntext($comment->comment_text)?></div></div>
+            </div>
+        <?php } ?>
+        <?php if ($this->canComment()) { ?>
+            <div class="<?= $this->show_comment_form ? "" : "hidden"?>" id="new-comment-form">
+                <?php
+                $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+                    'id'=>'comment-form',
+                    'action' => Yii::app()->createUrl('/' . $this->getModule()->name . '/Default/AddComment', array("id" => $this->event->id)),
+                    'enableAjaxValidation'=>false,
+                    'layoutColumns' => array(
+                        'label' => 2,
+                        'field' => 10
+                    )
+                ));
+                ?>
+                <?php echo $form->textArea($comment, 'comment_text', array('rows' => 6, 'cols' => 80), false, null ,array('label' => 2, 'field' => 6))?>
+                <div class="row data-row">
+                    <div class="large-2 column">&nbsp;</div>
+                    <div class="large-4 column end">
+                        <button class="button small secondary" id="new-comment-cancel">Cancel</button>
+                        <button class="button small primary" type="submit">Save</button>
+                    </div>
+                </div>
+                <?php $this->endWidget() ?>
+            </div>
+            <div class="row <?= $this->show_comment_form ? "hidden": "" ?>" id="add-comment-button-container">
+                <div class="large-2 column">&nbsp;</div>
+                <div class="large-3 column end">
+                    <button class="button small secondary" name="comment" type="submit" id="add-message-comment">Comment</button></div>
+            </div>
+        <?php } ?>
 	</div>
 </div>

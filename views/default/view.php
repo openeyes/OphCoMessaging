@@ -42,7 +42,7 @@ if ($this->checkPrintAccess()) {
     </div>
 <?php }?>
 
+<?php $this->displayErrors(@$errors)?>
 <?php $this->renderOpenElements($this->action->id)?>
-<?php $this->renderOptionalElements($this->action->id)?>
 
 <?php $this->endContent() ;?>

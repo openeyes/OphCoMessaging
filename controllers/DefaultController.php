@@ -2,6 +2,8 @@
 
 namespace OEModule\OphCoMessaging\controllers;
 
+use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Comment;
+
 class DefaultController extends \BaseEventTypeController
 {
     const ACTION_TYPE_MYMESSAGE = "ManageMyMessage";
@@ -10,12 +12,18 @@ class DefaultController extends \BaseEventTypeController
         'userfind' => self::ACTION_TYPE_CREATE,
         'markread' => self::ACTION_TYPE_MYMESSAGE,
         'markunread' => self::ACTION_TYPE_MYMESSAGE,
+        'addcomment' => self::ACTION_TYPE_MYMESSAGE
     );
 
     /**
      * @var \OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message
      */
     protected $message_el;
+
+    /**
+     * @var bool
+     */
+    public $show_comment_form = false;
 
     /**
      * Make sure user has clinical access and the user is the recipient of the message
@@ -152,6 +160,67 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * Set up event etc on the controller
+     *
+     * @throws \CHttpException
+     */
+    public function initActionAddComment()
+    {
+        $this->initWithEventId(@$_GET['id']);
+        $this->setOpenElementsFromCurrentEvent('view');
+    }
+
+    /**
+     * @param $id
+     * @throws \CHttpException
+     * @throws \Exception
+     */
+    public function actionAddComment($id)
+    {
+        $element = $this->getMessageElement();
+
+        if (count($element->comments)) {
+            throw new \CHttpException(409, "Only one comment allowed per message.");
+        }
+
+        $comment = new OphCoMessaging_Message_Comment();
+        \OELog::log(print_r($_POST, true));
+        $comment->comment_text = @$_POST['OEModule_OphCoMessaging_models_OphCoMessaging_Message_Comment']['comment_text'];
+        $comment->element_id = $element->id;
+
+        if (!$comment->validate()) {
+            $this->show_comment_form = true;
+
+            $this->action = new \CInlineAction($this, 'view');
+            $errors = array('Comment' => array());
+            foreach ($comment->getErrors() as $err) {
+                $errors['Comment'] = array_values($err);
+            }
+            $this->render('view', array(
+                'errors' => $errors,
+                'comment' => $comment
+            ));
+        }
+        else {
+            $transaction = \Yii::app()->db->beginTransaction();
+
+            try {
+                $element->marked_as_read = true;
+                $element->save();
+                $comment->save();
+                $transaction->commit();
+                \Yii::app()->user->setFlash('success', "Comment added to record");
+            }
+            catch (\Exception $e) {
+                $transaction->rollback();
+                throw $e;
+            }
+
+            $this->redirectAfterAction();
+        }
+    }
+
+    /**
      * Convenience function for performing redirect once a message has been manipulated
      */
     protected function redirectAfterAction()
@@ -168,6 +237,7 @@ class DefaultController extends \BaseEventTypeController
      * Determine if the given user (or current if none given) is the intended recipient of the message
      * that is being viewed
      *
+     * @TODO: Use Service Layer?
      * @param \OEWebUser $user
      * @return bool
      */
@@ -183,6 +253,18 @@ class DefaultController extends \BaseEventTypeController
             }
         }
         return false;
+    }
+
+    /**
+     * @TODO: Use Service Layer?
+     */
+    public function canComment(\OEWebUser $user = null)
+    {
+        if (is_null($user)) {
+            $user = \Yii::app()->user;
+        }
+
+        return $this->isIntendedRecipient($user) && !$this->getMessageElement()->comments;
     }
 
     /**
