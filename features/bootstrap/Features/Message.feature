@@ -20,3 +20,17 @@ Feature: Messaging
     And the application returns a validation error containing 'Type cannot be blank.'
 
     And the application returns a validation error containing 'Text cannot be blank.'
+
+    Then I type "Level Th" into the for the attention of field
+
+    And I select option "1" from the autocomplete list
+
+    Then "Level Three" is displayed as the selected user
+
+    Then I select "General" for the type of message
+
+    And I type "This is a sample message" into the message box
+
+    Then I Save the Event and confirm it has been created successfully
+
+
