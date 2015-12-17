@@ -87,5 +87,53 @@ class OphCoMessagingContext extends PageObjectContext
         $message->selectAutoCompleteOptionByIndex($index-1);
     }
 
+    /**
+     * @Then /^I Save the Message and confirm it has been created successfully$/
+     */
+    public function iSaveTheMessageAndConfirmItHasBeenCreatedSuccessfully()
+    {
+        /**
+         * @var OphCoMessaging
+         */
+        $message = $this->getPage("OphCoMessaging");
+        $message->saveAndConfirm();
+    }
+
+    /**
+     * @Given /^I confirm that fao user is "([^"]*)"$/
+     */
+    public function iConfirmThatFaoUserIs($arg1)
+    {
+        /**
+         * @var OphCoMessaging
+         */
+        $message = $this->getPage("OphCoMessaging");
+        $message->checkDisplayFaoIs($arg1);
+    }
+
+    /**
+     * @Given /^I confirm the message type is "([^"]*)"$/
+     */
+    public function iConfirmTheMessageTypeIs($arg1)
+    {
+        /**
+         * @var OphCoMessaging
+         */
+        $message = $this->getPage("OphCoMessaging");
+        $message->checkDisplayTypeIs($arg1);
+    }
+
+    /**
+     * @Given /^I confirm that the message text is "([^"]*)"$/
+     */
+    public function iConfirmThatTheMessageTextIs($arg1)
+    {
+        /**
+         * @var OphCoMessaging
+         */
+        $message = $this->getPage("OphCoMessaging");
+        $message->checkDisplayMessageIs($arg1);
+    }
+
 
 }

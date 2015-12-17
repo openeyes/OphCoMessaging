@@ -3,6 +3,8 @@ use Behat\Behat\Exception\BehaviorException;
 
 class OphCoMessaging extends OpenEyesPage
 {
+    protected $savedSuccessXpath = "//*[@id='flash-success']";
+
     protected $elements = array(
         'validationErrors' => array(
             'xpath' => "//div[contains(@class, 'alert-box') and contains(@class, 'error')]",
@@ -27,8 +29,27 @@ class OphCoMessaging extends OpenEyesPage
         ),
         'message_text' => array(
             'xpath' => "//*[@id='OEModule_OphCoMessaging_models_Element_OphCoMessaging_Message_message_text']"
-        )
+        ),
+        'save' => array (
+            'xpath' => "//*[@id='et_save']"
+        ),
+        'fao_display' => array(
+            'xpath' => "//section[contains(@class,'Element_OphCoMessaging_Message')]//div[@class='row data-row'][1]//div[contains(@class,'data-value')]"
+        ),
+        'message_type_display' => array(
+            'xpath' => "//section[contains(@class,'Element_OphCoMessaging_Message')]//div[@class='row data-row'][2]//div[contains(@class,'data-value')]"
+        ),
+        'message_text_display' => array(
+            'xpath' => "//section[contains(@class,'Element_OphCoMessaging_Message')]//div[@class='row data-row'][3]//div[contains(@class,'data-value')]"
+        ),
     );
+
+    protected function assertEquals($expected, $check, $message = "Values do not match")
+    {
+        if ($expected != $check) {
+            throw new BehaviorException("{$check} is not equal to {$expected}. {$message}");
+        }
+    }
 
     public function isValidationMessagePresent($message)
     {
@@ -108,9 +129,7 @@ class OphCoMessaging extends OpenEyesPage
      */
     public function selectedUserIs($username)
     {
-        if (!$this->getElement('selected_user_display')->getText() == $username) {
-            throw new BehaviorException("selected user is not {$username}, it is " . $this->getElement('selected_user_display')->getText());
-        }
+        $this->assertEquals($username, $this->getElement('selected_user_display')->getText());
     }
 
     /**
@@ -125,5 +144,53 @@ class OphCoMessaging extends OpenEyesPage
     public function enterMessage($message)
     {
         $this->getElement('message_text')->setValue($message);
+    }
+
+    /**
+     * @TODO: move to core
+     * @return bool
+     */
+    protected function hasEventSaved()
+    {
+        return ( bool ) $this->find ( 'xpath', $this->savedSuccessXpath );
+    }
+
+    /**
+     * @TODO: move into core as basic behaviour for all events
+     * @throws BehaviorException
+     */
+    public function saveAndConfirm()
+    {
+        $this->saveEvent();
+        if (!$this->hasEventSaved()) {
+            throw new BehaviorException("Event not saved");
+        }
+    }
+
+    /**
+     * @param $fao
+     * @throws BehaviorException
+     */
+    public function checkDisplayFaoIs($fao)
+    {
+        $this->assertEquals($fao, $this->getElement('fao_display')->getText());
+    }
+
+    /**
+     * @param $type
+     * @throws BehaviorException
+     */
+    public function checkDisplayTypeIs($type)
+    {
+        $this->assertEquals($type, $this->getElement('message_type_display')->getText());
+    }
+
+    /**
+     * @param $message
+     * @throws BehaviorException
+     */
+    public function checkDisplayMessageIs($message)
+    {
+        $this->assertEquals($message, $this->getElement('message_text_display')->getText());
     }
 }

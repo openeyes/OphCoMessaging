@@ -31,6 +31,13 @@ Feature: Messaging
 
     And I type "This is a sample message" into the message box
 
-    Then I Save the Event and confirm it has been created successfully
+    Then I Save the Message and confirm it has been created successfully
+
+    And I confirm that fao user is "Level Three"
+
+    And I confirm the message type is "General"
+
+    And I confirm that the message text is "This is a sample message"
+
 
 
