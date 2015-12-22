@@ -5,6 +5,8 @@ use \Behat\Behat\Exception\BehaviorException;
 
 class OphCoMessagingContext extends PageObjectContext
 {
+    protected $bookmarks = array();
+
     /**
      * @Given /^I select Create Message$/
      */
@@ -165,5 +167,49 @@ class OphCoMessagingContext extends PageObjectContext
         $message->saveEvent();
     }
 
+    /**
+     * @Given /^I bookmark the current page as "([^"]*)"$/
+     */
+    public function iBookmarkTheCurrentPageAs($arg1)
+    {
+        $this->bookmarks[$arg1] = $this->getPage('OphCoMessaging')->getCurrentUrl();
+    }
+
+    /**
+     * @Then /^I logout$/
+     */
+    public function iLogout()
+    {
+        /**
+         * @var OphCoMessaging
+         */
+        $message = $this->getPage("OphCoMessaging");
+        $message->logout();
+    }
+
+    /**
+     * @Given /^I see I have messages in the messages dashboard$/
+     */
+    public function iSeeIHaveMessagesInTheMessagesDashboard()
+    {
+        /**
+         * @var OphCoMessaging
+         */
+        $message = $this->getPage("OphCoMessaging");
+        $message->checkHaveMessagesInDashboard();
+    }
+
+    /**
+     * @Given /^there's a row for the bookmark "([^"]*)"$/
+     */
+    public function thereSARowForTheBookmark($arg1)
+    {
+        /**
+         * @var OphCoMessaging
+         */
+        $url = $this->bookmarks[$arg1];
+        $message = $this->getPage("OphCoMessaging");
+        $message->checkForLinkToUrl($url);
+    }
 
 }

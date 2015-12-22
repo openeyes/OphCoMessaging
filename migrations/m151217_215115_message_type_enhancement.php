@@ -15,15 +15,4 @@ class m151217_215115_message_type_enhancement extends OEMigration
         $this->delete('ophcomessaging_message_message_type_version', 'reply_required = true');
 		$this->dropColumn('ophcomessaging_message_message_type_version', 'reply_required');
 	}
-
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
-
-	public function safeDown()
-	{
-	}
-	*/
 }

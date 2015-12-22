@@ -7,7 +7,7 @@ Feature: Messaging
     And I select Site "1"
     Then I select a firm of "3"
 
-    Then I search for hospital number "1009465 "
+    Then I search for hospital number "1009465"
 
     Then I select the Latest Event
 
@@ -52,6 +52,19 @@ Feature: Messaging
     And I confirm the message type is "General"
 
     And I confirm that the message text is "This is a different sample message"
+
+    And I bookmark the current page as "myMessage"
+
+    Then I logout
+
+    And I enter login credentials "level3" and "password"
+
+    And I select Site "1"
+    Then I select a firm of "3"
+
+    And I see I have messages in the messages dashboard
+
+    And there's a row for the bookmark "myMessage"
 
 
 

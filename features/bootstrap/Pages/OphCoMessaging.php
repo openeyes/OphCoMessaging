@@ -4,6 +4,7 @@ use Behat\Behat\Exception\BehaviorException;
 class OphCoMessaging extends OpenEyesPage
 {
     protected $savedSuccessXpath = "//*[@id='flash-success']";
+    protected $bookmarks = array();
 
     protected $elements = array(
         'validationErrors' => array(
@@ -45,7 +46,24 @@ class OphCoMessaging extends OpenEyesPage
         'message_text_display' => array(
             'xpath' => "//section[contains(@class,'Element_OphCoMessaging_Message')]//div[@class='row data-row'][3]//div[contains(@class,'data-value')]"
         ),
+        'logout' => array(
+            'xpath' => "//ul[contains(@class,'navigation')]//a[text()='Logout']"
+        ),
+        'dashboard' => array(
+            'xpath' => "//div[@id='inbox-table']"
+        )
     );
+
+    /**
+     * This might be hideously brittle, but it will get the job done for now.
+     * Is here to support bookmarking
+     *
+     * @return mixed
+     */
+    public function getBaseUrl()
+    {
+        return $this->getDriver()->getMinkParameter('base_url');
+    }
 
     protected function assertEquals($expected, $check, $message = "Values do not match")
     {
@@ -206,6 +224,65 @@ class OphCoMessaging extends OpenEyesPage
     {
         if ($this->getElement('fao_search')->isValid()) {
             throw new BehaviorException("FAO search still visible");
+        }
+    }
+
+    public function storeBookmark($name)
+    {
+        $current_url = $this->getDriver()->getCurrentUrl();
+        $this->bookmarks[$name] = str_replace($this->getMinkParameter('base_url'), '', $current_url);
+    }
+
+    /**
+     * @TODO: move to core
+     */
+    public function logout()
+    {
+        $this->getElement('logout')->click();
+    }
+
+    /**
+     * @param bool $remove_base
+     * @return mixed|string
+     */
+    public function getCurrentUrl($remove_base=true)
+    {
+        return $remove_base ?
+            str_replace($this->getParameter('base_url'), '', $this->getDriver()->getCurrentUrl())
+            : $this->getDriver()->getCurrentUrl();
+    }
+
+    /**
+     * @param $url
+     * @return \Behat\Mink\Element\NodeElement|mixed|null
+     */
+    public function getLinkElementForUrl($url)
+    {
+        // use substring here because ends-with is only available in xpath 2.0
+        // and we want to check the end of the URL to match on both full links as well as links without the domain
+        return $this->find('xpath',"//a[substring(@href, string-length(@href) - string-length('{$url}') + 1) = '{$url}']");
+
+    }
+
+    /**
+     * @param $name
+     * @throws BehaviorException
+     */
+    public function checkForLinkToUrl($url)
+    {
+        if (!$this->getLinkElementForUrl($url)) {
+            throw new BehaviorException("Link for url {$url} not found.");
+        }
+    }
+
+    /**
+     * @throws BehaviorException
+     */
+    public function checkHaveMessagesInDashboard()
+    {
+        $db = $this->getElement('dashboard');
+        if (!$db->findAll('xpath', '//tbody//tr')) {
+            throw new BehaviorException("No messages in dashboard");
         }
     }
 }
