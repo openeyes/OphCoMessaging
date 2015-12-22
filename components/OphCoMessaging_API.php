@@ -45,6 +45,11 @@ class OphCoMessaging_API extends \BaseAPI
      */
     public function renderDashboard($user = null)
     {
+        $read_check = false;
+
+        if (@$_GET['OphCoMessaging_read'] == 1)
+            $read_check = true;
+
         if (is_null($user)) {
             $user = \Yii::app()->user;
         }
@@ -75,16 +80,16 @@ class OphCoMessaging_API extends \BaseAPI
                     'together' => true,
                     'with' => array('event', 'for_the_attention_of_user', 'message_type', 'event.episode', 'event.episode.patient', 'event.episode.patient.contact'),
                     'condition' => 'for_the_attention_of_user_id = :uid AND marked_as_read = :read',
-                    'params' => array(':uid' => $user->id, ':read' => false),
+                    'params' => array(':uid' => $user->id, ':read' => $read_check),
                 ),
                 'pagination' => array(
-                    'pageSize' => 2
+                    'pageSize' => 10
                 )
             ));
         $criteria = new \CDbCriteria();
         $criteria->addCondition('for_the_attention_of_user_id = :uid');
         $criteria->addCondition('marked_as_read = :read');
-        $criteria->params = array(':uid' => $user->id, ':read' => false);
+        $criteria->params = array(':uid' => $user->id, ':read' => $read_check);
         $criteria->order = 'created_date asc';
 
         $messages = Element_OphCoMessaging_Message::model()->findAll($criteria);
@@ -95,7 +100,8 @@ class OphCoMessaging_API extends \BaseAPI
             'title' => 'Unread Messages',
             'content' => \Yii::app()->controller->renderPartial('OphCoMessaging.views.inbox.grid', array(
                             'messages' => $messages,
-                            'dp' => $dp
+                            'dp' => $dp,
+                            'read_check' => $read_check
                         ),true)
         );
     }
