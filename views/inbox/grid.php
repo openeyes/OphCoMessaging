@@ -1,6 +1,4 @@
 
-
-<div class="panel">
 <?php
 $this->widget('zii.widgets.grid.CGridView', array(
     'itemsCssClass' => 'grid',
@@ -88,4 +86,3 @@ $this->widget('zii.widgets.grid.CGridView', array(
     )
 ));
 ?>
-</div>

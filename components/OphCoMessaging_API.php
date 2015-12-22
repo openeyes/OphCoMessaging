@@ -91,9 +91,12 @@ class OphCoMessaging_API extends \BaseAPI
 
         \Yii::app()->getAssetManager()->registerCssFile('module.css', 'application.modules.OphCoMessaging.assets.css');
 
-        \Yii::app()->controller->renderPartial('OphCoMessaging.views.inbox.grid', array(
-            'messages' => $messages,
-            'dp' => $dp
-        ));
+        return array(
+            'title' => 'Unread Messages',
+            'content' => \Yii::app()->controller->renderPartial('OphCoMessaging.views.inbox.grid', array(
+                            'messages' => $messages,
+                            'dp' => $dp
+                        ),true)
+        );
     }
 }

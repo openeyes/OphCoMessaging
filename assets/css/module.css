@@ -38,21 +38,27 @@
 }
 
 /* line 1, ../sass/components/_inbox.scss */
+#inbox-table {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+/* line 5, ../sass/components/_inbox.scss */
 #inbox-table td {
   vertical-align: top;
 }
 
-/* line 5, ../sass/components/_inbox.scss */
+/* line 9, ../sass/components/_inbox.scss */
 #inbox-table span.priority {
   color: #f33;
 }
 
-/* line 9, ../sass/components/_inbox.scss */
+/* line 13, ../sass/components/_inbox.scss */
 #inbox-table .date {
   white-space: nowrap;
 }
 
-/* line 13, ../sass/components/_inbox.scss */
+/* line 17, ../sass/components/_inbox.scss */
 #inbox-table .summary {
   font-size: 0.8em;
 }
