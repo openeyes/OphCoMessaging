@@ -3,17 +3,13 @@ if ($read_check) {
     $link_label = 'View Unread';
     $check_var = 0;
     $viewing_label = 'Read Messages';
-}
-else {
+} else {
     $link_label = 'View Read';
     $check_var = 1;
     $viewing_label = 'Unread Messages';
 }
-foreach (array_merge($_GET, array('OphCoMessaging_read' => $check_var)) as $k => $v) {
-    $qs = "{$k}={$v}";
-}
 ?>
-<a href="<?= Yii::app()->request->getPathInfo() . '?' . $qs; ?>" class="button small secondary"><?=$link_label?></a>
+<a href="<?= Yii::app()->request->getPathInfo() . '?' . http_build_query(array('OphCoMessaging_read' => $check_var)); ?>" class="button small secondary"><?=$link_label?></a>
 <?php
 $cols = array(
     array(
@@ -29,10 +25,9 @@ $cols = array(
     ),
     array(
         'id' => 'event_date',
-        'class' => 'CLinkColumn',
+        'class' => 'CDataColumn',
         'header' => $dp->getSort()->link('event_date','Date',array('class'=>'sort-link')),
-        'labelExpression' => 'Helper::convertMySQL2NHS($data->event->event_date)',
-        'urlExpression' => 'Yii::app()->createURL("/OphCoMessaging/default/view/", array("id" => $data->event_id))',
+        'value' => 'Helper::convertMySQL2NHS($data->event->event_date)',
         'htmlOptions' => array('class' => 'date')
     ),
     array(
@@ -42,9 +37,10 @@ $cols = array(
     ),
     array(
         'id' => 'patient_name',
-        'class' => 'CDataColumn',
+        'class' => 'CLinkColumn',
         'header' => $dp->getSort()->link('patient_name','Name',array('class'=>'sort-link')),
-        'value' => '$data->event->episode->patient->getHSCICName()'
+        'urlExpression' => 'Yii::app()->createURL("/OphCoMessaging/default/view/", array("id" => $data->event_id))',
+        'labelExpression' => '$data->event->episode->patient->getHSCICName()'
     ),
     array(
         'id' => 'dob',
@@ -80,7 +76,7 @@ if (!$read_check) {
                         "returnUrl" => \Yii::app()->request->requestUri))',
                 'label' => '<button class="warning small">dismiss</button>',
                 'visible' => function($row, $data) {
-                    return !$data->message_type->reply_required;
+                    return !$data->message_type->reply_required || $data->comments;
                 }
 
             ),
@@ -91,7 +87,7 @@ if (!$read_check) {
                                         "comment" => 1))',
                 'label' => '<button class="secondary small">reply</button>',
                 'visible' => function($row, $data) {
-                    return $data->message_type->reply_required;
+                    return $data->message_type->reply_required && !$data->comments;
                 }
             )
         )
@@ -102,7 +98,7 @@ $this->widget('zii.widgets.grid.CGridView', array(
     'itemsCssClass' => 'grid',
     'dataProvider'=>$dp,
     'htmlOptions' => array('id' => 'inbox-table'),
-    'summaryText' => '<h3>' . $viewing_label . '<small>{start}-{end} of {count}</small></h3>',
+    'summaryText' => '<h3>' . $viewing_label . '<small> {start}-{end} of {count} </small></h3>',
     'columns' => $cols
 ));
 ?>

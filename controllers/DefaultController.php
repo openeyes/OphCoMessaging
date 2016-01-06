@@ -260,6 +260,30 @@ class DefaultController extends \BaseEventTypeController
                 return true;
             }
         }
+
+        return false;
+    }
+
+    /**
+     * Determine if the given user (or current if none given) is the sender of the message
+     * that is being viewed
+     *
+     * @TODO: Use Service Layer?
+     * @param \OEWebUser $user
+     * @return bool
+     */
+    protected function isSender(\OEWebUser $user = null)
+    {
+        if (is_null($user)) {
+            $user = \Yii::app()->user;
+        }
+
+        if ($el = $this->getMessageElement()) {
+            if ($el->user->id == $user->getId()) {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -272,7 +296,7 @@ class DefaultController extends \BaseEventTypeController
             $user = \Yii::app()->user;
         }
 
-        return $this->isIntendedRecipient($user) && !$this->getMessageElement()->comments;
+        return $this->isIntendedRecipient($user) && !$this->isSender($user) && !$this->getMessageElement()->comments;
     }
 
     /**

@@ -20,7 +20,7 @@
 
 <?php $this->beginContent('//patient/event_container'); ?>
 <?php
-$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form'=>'messaging-create'));
+$this->event_actions[] = EventAction::button('Send', 'save', array('level' => 'save'), array('form'=>'messaging-create'));
 ?>
 
 <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(

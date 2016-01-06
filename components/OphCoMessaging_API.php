@@ -45,10 +45,7 @@ class OphCoMessaging_API extends \BaseAPI
      */
     public function renderDashboard($user = null)
     {
-        $read_check = false;
-
-        if (@$_GET['OphCoMessaging_read'] == 1)
-            $read_check = true;
+        $read_check = (\Yii::app()->request->getQuery('OphCoMessaging_read', '0') === '1');
 
         if (is_null($user)) {
             $user = \Yii::app()->user;
@@ -97,7 +94,7 @@ class OphCoMessaging_API extends \BaseAPI
         \Yii::app()->getAssetManager()->registerCssFile('module.css', 'application.modules.OphCoMessaging.assets.css');
 
         return array(
-            'title' => 'Unread Messages',
+            'title' => $read_check ? 'Read Messages' : 'Unread Messages',
             'content' => \Yii::app()->controller->renderPartial('OphCoMessaging.views.inbox.grid', array(
                             'messages' => $messages,
                             'dp' => $dp,
