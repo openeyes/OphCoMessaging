@@ -89,7 +89,9 @@ if (!$read_check) {
                         "returnUrl" => \Yii::app()->request->requestUri))',
                 'label' => '<button class="warning small">dismiss</button>',
                 'visible' => function($row, $data) {
-                    return !$data->message_type->reply_required || $data->comments;
+                    return !$data->message_type->reply_required
+                    || $data->comments
+                    || (\Yii::app()->user->id === $data->created_user_id);
                 }
 
             ),
@@ -98,14 +100,17 @@ if (!$read_check) {
                 'url' => 'Yii::app()->createURL("/OphCoMessaging/Default/view/", array(
                                         "id" => $data->event->id,
                                         "comment" => 1))',
-                'label' => '<button class="secondary small">reply</button>',
+                'label' => '<button class="secondary small">Reply</button>',
                 'visible' => function($row, $data) {
-                    return $data->message_type->reply_required && !$data->comments;
+                    return $data->message_type->reply_required
+                    && !$data->comments
+                    && (\Yii::app()->user->id !== $data->created_user_id);
                 }
             )
         )
     );
 }
+
 
 $this->widget('zii.widgets.grid.CGridView', array(
     'itemsCssClass' => 'grid',
