@@ -68,3 +68,9 @@
   width: 25%;
   display: inline-block;
 }
+/* line 6, ../sass/components/_search.scss */
+#grid_header_form input {
+  display: inline;
+  width: auto;
+  margin-left: 5px;
+}

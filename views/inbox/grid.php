@@ -15,8 +15,8 @@ if ($read_check) {
     });
 </script>
 <form id="grid_header_form">
-    <button type="submit" class="small secondary" name="OphCoMessaging_read" value="<?=$check_var?>"><?=$link_label?></button>
     <div>
+        <button type="submit" class="small secondary" name="OphCoMessaging_read" value="<?=$check_var?>"><?=$link_label?></button>
         <label>from:<input type="text" name="OphCoMessaging_from" class="datepicker" value="<?=\Yii::app()->request->getQuery('OphCoMessaging_from', '')?>" /></label>
         <label>to:<input type="text" name="OphCoMessaging_to" class="datepicker" value="<?=\Yii::app()->request->getQuery('OphCoMessaging_to', '')?>" /></label>
         <button type="submit" class="small secondary" name="OphCoMessaging_read" value="<?=intval(!$check_var)?>">Search</button>
