@@ -9,7 +9,20 @@ if ($read_check) {
     $viewing_label = 'Unread Messages';
 }
 ?>
-<a href="<?= Yii::app()->request->getPathInfo() . '?' . http_build_query(array('OphCoMessaging_read' => $check_var)); ?>" class="button small secondary"><?=$link_label?></a>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#grid_header_form .datepicker').datepicker({'showAnim':'fold','dateFormat':'d M yy'});
+    });
+</script>
+<form id="grid_header_form">
+    <button type="submit" class="small secondary" name="OphCoMessaging_read" value="<?=$check_var?>"><?=$link_label?></button>
+    <div>
+        <label>from:<input type="text" name="OphCoMessaging_from" class="datepicker" value="<?=\Yii::app()->request->getQuery('OphCoMessaging_from', '')?>" /></label>
+        <label>to:<input type="text" name="OphCoMessaging_to" class="datepicker" value="<?=\Yii::app()->request->getQuery('OphCoMessaging_to', '')?>" /></label>
+        <button type="submit" class="small secondary" name="OphCoMessaging_read" value="<?=intval(!$check_var)?>">Search</button>
+    </div>
+</form>
+
 <?php
 $cols = array(
     array(

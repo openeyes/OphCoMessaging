@@ -70,24 +70,36 @@ class OphCoMessaging_API extends \BaseAPI
 
         $sort->defaultOrder = array('event_date' => \CSort::SORT_DESC);
 
+        $from = \Yii::app()->request->getQuery('OphCoMessaging_from', '');
+        $to = \Yii::app()->request->getQuery('OphCoMessaging_to', '');
+        $params = array(':uid' => $user->id, ':read' => $read_check);
+
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition('for_the_attention_of_user_id = :uid');
+        $criteria->addCondition('marked_as_read = :read');
+        $criteria->with = array('event','for_the_attention_of_user', 'message_type', 'event.episode', 'event.episode.patient', 'event.episode.patient.contact');
+        $criteria->together = true;
+        if($from){
+            $criteria->addCondition('t.created_date >= :from');
+            $params[':from'] = \Helper::convertNHS2MySQL($from);
+        }
+        if($to){
+            $criteria->addCondition('t.created_date <= :to');
+            $params[':to'] = \Helper::convertNHS2MySQL($to);
+        }
+
+        $criteria->params = $params;
+        $criteria->order = 't.created_date asc';
+
+
         $dp = new \CActiveDataProvider('OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
             array(
                 'sort' => $sort,
-                'criteria' => array(
-                    'together' => true,
-                    'with' => array('event', 'for_the_attention_of_user', 'message_type', 'event.episode', 'event.episode.patient', 'event.episode.patient.contact'),
-                    'condition' => 'for_the_attention_of_user_id = :uid AND marked_as_read = :read',
-                    'params' => array(':uid' => $user->id, ':read' => $read_check),
-                ),
+                'criteria' => $criteria,
                 'pagination' => array(
                     'pageSize' => 10
                 )
             ));
-        $criteria = new \CDbCriteria();
-        $criteria->addCondition('for_the_attention_of_user_id = :uid');
-        $criteria->addCondition('marked_as_read = :read');
-        $criteria->params = array(':uid' => $user->id, ':read' => $read_check);
-        $criteria->order = 'created_date asc';
 
         $messages = Element_OphCoMessaging_Message::model()->findAll($criteria);
 
