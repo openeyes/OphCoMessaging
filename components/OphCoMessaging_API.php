@@ -80,17 +80,16 @@ class OphCoMessaging_API extends \BaseAPI
         $criteria->with = array('event','for_the_attention_of_user', 'message_type', 'event.episode', 'event.episode.patient', 'event.episode.patient.contact');
         $criteria->together = true;
         if($from){
-            $criteria->addCondition('t.created_date >= :from');
+            $criteria->addCondition('DATE(t.created_date) >= :from');
             $params[':from'] = \Helper::convertNHS2MySQL($from);
         }
         if($to){
-            $criteria->addCondition('t.created_date <= :to');
+            $criteria->addCondition('DATE(t.created_date) <= :to');
             $params[':to'] = \Helper::convertNHS2MySQL($to);
         }
 
         $criteria->params = $params;
         $criteria->order = 't.created_date asc';
-
 
         $dp = new \CActiveDataProvider('OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
             array(
