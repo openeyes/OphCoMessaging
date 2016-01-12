@@ -20,11 +20,11 @@
 /* line 18, ../sass/components/_event.scss */
 .event .event-content {
   border-color: #86cdff;
-  background-image: url('../img/watermark.png?1452003684');
+  background-image: url('../img/watermark.png?1450171523');
 }
 /* line 22, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1452004027');
+  background-image: url('../img/medium.png?1450177641');
 }
 
 /* line 27, ../sass/components/_event.scss */
@@ -65,10 +65,9 @@
 
 /* line 2, ../sass/components/_search.scss */
 #grid_header_form label {
-  width: 25%;
   display: inline-block;
 }
-/* line 6, ../sass/components/_search.scss */
+/* line 5, ../sass/components/_search.scss */
 #grid_header_form input {
   display: inline;
   width: auto;

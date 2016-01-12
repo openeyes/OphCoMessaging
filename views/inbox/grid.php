@@ -15,11 +15,17 @@ if ($read_check) {
     });
 </script>
 <form id="grid_header_form">
-    <div>
-        <button type="submit" class="small secondary" name="OphCoMessaging_read" value="<?=$check_var?>"><?=$link_label?></button>
-        <label>from:<input type="text" name="OphCoMessaging_from" class="datepicker" value="<?=\Yii::app()->request->getQuery('OphCoMessaging_from', '')?>" /></label>
-        <label>to:<input type="text" name="OphCoMessaging_to" class="datepicker" value="<?=\Yii::app()->request->getQuery('OphCoMessaging_to', '')?>" /></label>
-        <button type="submit" class="small secondary" name="OphCoMessaging_read" value="<?=intval(!$check_var)?>">Search</button>
+    <div class="row">
+        <div class="messages-filter">
+            <div class="large-3 column">
+            <button type="submit" class="small secondary" name="OphCoMessaging_read" value="<?=$check_var?>"><?=$link_label?></button>
+            </div>
+            <div class="large-9 column text-right">
+                <label for="OphCoMessaging_from">from:</label><input type="text" id="OphCoMessaging_from" name="OphCoMessaging_from" class="datepicker" value="<?=\Yii::app()->request->getQuery('OphCoMessaging_from', '')?>" />
+                <label for="OphCoMessaging_to">to:</label><input type="text" id="OphCoMessaging_to" name="OphCoMessaging_to" class="datepicker" value="<?=\Yii::app()->request->getQuery('OphCoMessaging_to', '')?>" />
+                <button type="submit" class="small secondary" name="OphCoMessaging_read" value="<?=intval(!$check_var)?>">Search</button>
+            </div>
+        </div>
     </div>
 </form>
 
