@@ -21,8 +21,8 @@ if ($read_check) {
             <button type="submit" class="small secondary" name="OphCoMessaging_read" value="<?=$check_var?>"><?=$link_label?></button>
             </div>
             <div class="large-9 column text-right">
-                <label for="OphCoMessaging_from">from:</label><input type="text" id="OphCoMessaging_from" name="OphCoMessaging_from" class="datepicker" value="<?=\Yii::app()->request->getQuery('OphCoMessaging_from', '')?>" />
-                <label for="OphCoMessaging_to">to:</label><input type="text" id="OphCoMessaging_to" name="OphCoMessaging_to" class="datepicker" value="<?=\Yii::app()->request->getQuery('OphCoMessaging_to', '')?>" />
+                <label for="OphCoMessaging_from">From:</label><input type="text" id="OphCoMessaging_from" name="OphCoMessaging_from" class="datepicker" value="<?=\Yii::app()->request->getQuery('OphCoMessaging_from', '')?>" />
+                <label for="OphCoMessaging_to">To:</label><input type="text" id="OphCoMessaging_to" name="OphCoMessaging_to" class="datepicker" value="<?=\Yii::app()->request->getQuery('OphCoMessaging_to', '')?>" />
                 <button type="submit" class="small secondary" name="OphCoMessaging_read" value="<?=intval(!$check_var)?>">Search</button>
             </div>
         </div>

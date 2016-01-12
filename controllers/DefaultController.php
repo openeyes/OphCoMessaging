@@ -296,7 +296,10 @@ class DefaultController extends \BaseEventTypeController
             $user = \Yii::app()->user;
         }
 
-        return $this->isIntendedRecipient($user) && !$this->isSender($user) && !$this->getMessageElement()->comments;
+        return $this->getMessageElement()->message_type->reply_required
+                && $this->isIntendedRecipient($user)
+                && !$this->isSender($user)
+                && !$this->getMessageElement()->comments;
     }
 
     /**
