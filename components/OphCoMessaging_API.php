@@ -56,8 +56,8 @@ class OphCoMessaging_API extends \BaseAPI
         $sort->attributes = array(
             'priority' => array('asc' => 'urgent asc',
                                 'desc' => 'urgent desc'),
-            'event_date' => array('asc' => 'event.created_date asc',
-                                'desc' => 'event.created_date desc'),
+            'event_date' => array('asc' => 't.created_date asc',
+                                'desc' => 't.created_date desc'),
             'patient_name' => array('asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
                                     'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc'),
             'hos_num' => array('asc' => 'patient.hos_num asc',
@@ -75,8 +75,15 @@ class OphCoMessaging_API extends \BaseAPI
         $params = array(':uid' => $user->id, ':read' => $read_check);
 
         $criteria = new \CDbCriteria();
-        $criteria->addCondition('for_the_attention_of_user_id = :uid');
-        $criteria->addCondition('marked_as_read = :read');
+        $criteria->select = array(
+            '*',
+            new \CDbExpression('IF(comment.marked_as_read = 0, comment.comment_text, t.message_text) as message_text'),
+            new \CDbExpression('IF(comment.marked_as_read = 0, comment.created_date, t.created_date) as created_date'),
+            new \CDbExpression('IF(comment.marked_as_read = 0, comment.created_user_id, t.created_user_id) as created_user_id'),
+        );
+        $criteria->addCondition('t.for_the_attention_of_user_id = :uid AND t.marked_as_read = :read');
+        $criteria->addCondition('t.created_user_id = :uid AND comment.marked_as_read = 0', 'OR');
+        $criteria->join = 'LEFT JOIN ophcomessaging_message_comment AS comment ON t.id = comment.element_id';
         $criteria->with = array('event','for_the_attention_of_user', 'message_type', 'event.episode', 'event.episode.patient', 'event.episode.patient.contact');
         $criteria->together = true;
         if($from){

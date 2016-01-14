@@ -7,11 +7,12 @@ use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Comment;
 class DefaultController extends \BaseEventTypeController
 {
     const ACTION_TYPE_MYMESSAGE = "ManageMyMessage";
+    const ACTION_TYPE_MARKMESSAGE = "MarkMyMessage";
 
     static protected $action_types = array(
         'userfind' => self::ACTION_TYPE_CREATE,
-        'markread' => self::ACTION_TYPE_MYMESSAGE,
-        'markunread' => self::ACTION_TYPE_MYMESSAGE,
+        'markread' => self::ACTION_TYPE_MARKMESSAGE,
+        'markunread' => self::ACTION_TYPE_MARKMESSAGE,
         'addcomment' => self::ACTION_TYPE_MYMESSAGE
     );
 
@@ -33,6 +34,16 @@ class DefaultController extends \BaseEventTypeController
     public function checkManageMyMessageAccess()
     {
         return $this->checkAccess('OprnViewClinical') && $this->isIntendedRecipient();
+    }
+
+    /**
+     * Make sure user has clinical access and the user is the recipient of the message
+     *
+     * @return bool
+     */
+    public function checkMarkMyMessageAccess()
+    {
+        return $this->checkAccess('OprnViewClinical') && $this->isIntendedRecipient() || $this->isSender(\Yii::app()->user);
     }
 
     /**
@@ -111,21 +122,12 @@ class DefaultController extends \BaseEventTypeController
     {
         $el = $this->getMessageElement();
 
-        $el->marked_as_read = true;
-        $transaction = \Yii::app()->db->beginTransaction();
-        try {
-            $el->save();
-            $this->updateEvent();
-
-            $this->event->audit('event', 'marked read');
-
-            \Yii::app()->user->setFlash('success', "<a href=\"" . $this->getEventViewUrl() . "\">{$this->event_type->name}</a> marked as read.");
-
-            $transaction->commit();
-        } catch (\Exception $e) {
-            $transaction->rollback();
-            throw $e;
+        if($el->comments && $this->isSender(\Yii::app()->user)){
+            $this->markCommentRead($el);
+        } else {
+            $this->markMessageRead($el);
         }
+
 
         $this->redirectAfterAction();
     }
@@ -322,10 +324,36 @@ class DefaultController extends \BaseEventTypeController
     public function canMarkRead()
     {
         $el = $this->getMessageElement();
+        if($el->comments && $this->isSender(\Yii::app()->user)){
+            return $this->canMarkCommentRead($el);
+        } else {
+            return $this->canMarkMessageRead($el);
+        }
+    }
+
+    /**
+     * @param $el
+     * @return bool
+     */
+    protected function canMarkMessageRead($el)
+    {
         if ($this->isIntendedRecipient()
             && !$el->marked_as_read
         ) {
             return true;
+        }
+
+        return false;
+    }
+
+    protected function canMarkCommentRead($el)
+    {
+        if($this->isSender(\Yii::app()->user)){
+            foreach($el->comments as $comment){
+                if(!$comment->marked_as_read){
+                    return true;
+                }
+            }
         }
 
         return false;
@@ -344,6 +372,47 @@ class DefaultController extends \BaseEventTypeController
         }
 
         return false;
+    }
+
+    /**
+     * @param $el
+     * @throws \Exception
+     */
+    protected function markMessageRead($el)
+    {
+        $el->marked_as_read = true;
+        $transaction = \Yii::app()->db->beginTransaction();
+        try {
+            $el->save();
+            $this->updateEvent();
+
+            $this->event->audit('event', 'marked read');
+
+            \Yii::app()->user->setFlash('success', "<a href=\"" . $this->getEventViewUrl() . "\">{$this->event_type->name}</a> marked as read.");
+
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollback();
+            throw $e;
+        }
+    }
+
+    protected function markCommentRead($el)
+    {
+        $transaction = \Yii::app()->db->beginTransaction();
+        try {
+
+            foreach($el->comments as $comment){
+                $comment->marked_as_read = true;
+                $comment->save();
+            }
+
+            $this->event->audit('event', 'comments marked read');
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollback();
+            throw $e;
+        }
     }
 
     /**

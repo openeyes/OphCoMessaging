@@ -46,7 +46,7 @@ $cols = array(
         'id' => 'event_date',
         'class' => 'CDataColumn',
         'header' => $dp->getSort()->link('event_date','Date',array('class'=>'sort-link')),
-        'value' => 'Helper::convertMySQL2NHS($data->event->event_date)',
+        'value' => 'Helper::convertMySQL2NHS($data->created_date)',
         'htmlOptions' => array('class' => 'date')
     ),
     array(
@@ -71,7 +71,7 @@ $cols = array(
     array(
         'id' => 'user',
         'header' => $dp->getSort()->link('user','From',array('class'=>'sort-link')),
-        'value' => '$data->event->user->getFullNameAndTitle()'
+        'value' => '\User::model()->findByPk($data->created_user_id)->getFullNameAndTitle()'
     ),
     array(
         'name' => 'Message',
