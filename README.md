@@ -16,9 +16,15 @@ In the module config is the details for the dashboard integration
 
     'params' => array(
         'dashboard_items' => array(
-            array(
-                'api' => 'OphCoMessaging'
-            )
+           array(
+                'module' => 'OphCoMessaging',
+				
+                // default action is the 'renderDashboard' if 'actions' array is  not set
+                'actions' => array(
+                    'getInboxMessages',
+                    'getSentMessages',
+                 )
+            ),
         )
     )
 

@@ -35,13 +35,183 @@ class OphCoMessaging_API extends \BaseAPI
 			'uri' => '/OphCoMessaging/Inbox',
 			'messageCount' => count($messages),
             'containsUrgentMessage' => $containsUrgentMessage
-		);
-	}
+        );
+    }
+    
+    /**
+     * Get received messages
+     * 
+     * @param CWebUser $user
+     * @return array title and content of for the widget
+     */
+    public function getInboxMessages($user = null)
+    {
+        $read_check = (\Yii::app()->request->getQuery('OphCoMessaging_read', '0') === '1');
+
+        if (is_null($user)) {
+            $user = \Yii::app()->user;
+        }
+
+        $sort = new \CSort();
+
+        $sort->attributes = array(
+            'priority' => array('asc' => 'urgent asc',
+                                'desc' => 'urgent desc'),
+            'event_date' => array('asc' => 't.created_date asc',
+                                'desc' => 't.created_date desc'),
+            'patient_name' => array('asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
+                                    'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc'),
+            'hos_num' => array('asc' => 'patient.hos_num asc',
+                                'desc' => 'patient.hos_num desc'),
+            'dob' => array('asc' => 'patient.dob asc',
+                            'desc' => 'patient.dob desc'),
+            'user' => array('asc' => 'lower(for_the_attention_of_user.last_name) asc, lower(for_the_attention_of_user.first_name) asc',
+                            'desc' => 'lower(for_the_attention_of_user.last_name) desc, lower(for_the_attention_of_user.first_name) desc')
+        );
+
+        $sort->defaultOrder = 'event_date desc';
+
+        $from = \Yii::app()->request->getQuery('OphCoMessaging_from', '');
+        $to = \Yii::app()->request->getQuery('OphCoMessaging_to', '');
+        $params = array(':uid' => $user->id, ':read' => $read_check);
+
+        $criteria = new \CDbCriteria();
+        $criteria->select = array(
+            '*',
+            new \CDbExpression('IF(comment.created_user_id = :uid, t.message_text, IF(comment.marked_as_read = 0, comment.comment_text, t.message_text))  as message_text'),
+            new \CDbExpression('IF(comment.created_user_id = :uid, t.created_date, IF(comment.marked_as_read = 0, comment.created_date, t.created_date))  as created_date'),
+            new \CDbExpression('IF(comment.created_user_id = :uid, t.created_user_id, IF(comment.marked_as_read = 0, comment.created_user_id, t.created_user_id)) as created_user_id'),
+        );
+        
+        $criteria->addCondition('t.for_the_attention_of_user_id = :uid AND t.marked_as_read = :read');
+        $criteria->addCondition('t.created_user_id = :uid AND comment.marked_as_read = 0', 'OR');
+        $criteria->join = 'LEFT JOIN ophcomessaging_message_comment AS comment ON t.id = comment.element_id';
+        $criteria->with = array('event','for_the_attention_of_user', 'message_type', 'event.episode', 'event.episode.patient', 'event.episode.patient.contact');
+        $criteria->together = true;
+        if($from){
+            $criteria->addCondition('DATE(t.created_date) >= :from');
+            $params[':from'] = \Helper::convertNHS2MySQL($from);
+        }
+        if($to){
+            $criteria->addCondition('DATE(t.created_date) <= :to');
+            $params[':to'] = \Helper::convertNHS2MySQL($to);
+        }
+
+        $criteria->params = $params;
+
+        $dp = new \CActiveDataProvider('OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
+            array(
+                'sort' => $sort,
+                'criteria' => $criteria,
+                'pagination' => array(
+                    'pageSize' => 10
+                )
+            ));
+
+        $messages = Element_OphCoMessaging_Message::model()->findAll($criteria);
+
+        \Yii::app()->getAssetManager()->registerCssFile('module.css', 'application.modules.OphCoMessaging.assets.css');
+        
+        $inbox_view = \Yii::app()->controller->renderPartial('OphCoMessaging.views.inbox.grid', array(
+                            'messages' => $messages,
+                            'dp' => $dp,
+                            'read_check' => $read_check
+                        ),true);
+
+        return array(
+            'title' => "Messages" . ( !$read_check && $dp->totalItemCount ? " [{$dp->totalItemCount}]" : "" ),
+            'content' => $inbox_view,
+            'options' => array(
+                'js-toggle-open' => isset($_GET['OphCoMessaging_read']) || isset($_GET['OphCoMessaging_from']) || isset($_GET['OphCoMessaging_to']),
+            )
+        );
+    }
+    
+    /**
+     * Get sent messages 
+     * 
+     * @param CWebUser $user
+     * @return array title and content for the widget
+     */
+    public function getSentMessages($user = null)
+    {
+
+        if (is_null($user)) {
+            $user = \Yii::app()->user;
+        }
+
+        $sort = new \CSort();
+
+        $sort->attributes = array(
+            'priority' => array('asc' => 'urgent asc',
+                                'desc' => 'urgent desc'),
+            'event_date' => array('asc' => 't.created_date asc',
+                                'desc' => 't.created_date desc'),
+            'patient_name' => array('asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
+                                    'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc'),
+            'hos_num' => array('asc' => 'patient.hos_num asc',
+                                'desc' => 'patient.hos_num desc'),
+            'dob' => array('asc' => 'patient.dob asc',
+                            'desc' => 'patient.dob desc'),
+            'user' => array('asc' => 'lower(for_the_attention_of_user.last_name) asc, lower(for_the_attention_of_user.first_name) asc',
+                            'desc' => 'lower(for_the_attention_of_user.last_name) desc, lower(for_the_attention_of_user.first_name) desc')
+        );
+
+        $sort->defaultOrder = 'event_date desc';
+
+        $from = \Yii::app()->request->getQuery('OphCoMessaging_sent_from', '');
+        $to = \Yii::app()->request->getQuery('OphCoMessaging_sent_to', '');
+        $params = array(':uid' => $user->id);
+
+        $criteria = new \CDbCriteria();
+        $criteria->select = array('*');
+
+        $criteria->addCondition('t.created_user_id = :uid');
+       
+        $criteria->with = array('event','for_the_attention_of_user', 'message_type', 'event.episode', 'event.episode.patient', 'event.episode.patient.contact');
+        $criteria->together = true;
+        if($from){
+            $criteria->addCondition('DATE(t.created_date) >= :from');
+            $params[':from'] = \Helper::convertNHS2MySQL($from);
+        }
+        if($to){
+            $criteria->addCondition('DATE(t.created_date) <= :to');
+            $params[':to'] = \Helper::convertNHS2MySQL($to);
+        }
+
+        $criteria->params = $params;
+
+        $dataProvider = new \CActiveDataProvider('OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
+            array(
+                'sort' => $sort,
+                'criteria' => $criteria,
+                'pagination' => array(
+                    'pageSize' => 10
+                )
+            ));
+
+        $messages = Element_OphCoMessaging_Message::model()->findAll($criteria);
+
+        \Yii::app()->getAssetManager()->registerCssFile('module.css', 'application.modules.OphCoMessaging.assets.css');
+        
+        $inbox_view = \Yii::app()->controller->renderPartial('OphCoMessaging.views.sent.grid', array(
+                            'messages' => $messages,
+                            'dataProvider' => $dataProvider,
+                        ),true);
+        
+        return array(
+            'title' => 'Sent Messages',
+            'content' => $inbox_view,
+            'options' => array(
+                'js-toggle-open' => isset($_GET['OphCoMessaging_sent_from']) || isset($_GET['OphCoMessaging_sent_to']),
+            )
+        );
+    }
 
     /**
      * Dashboard index for displaying messages as an embedded view
      *
-     * @param null $user
+     * @param CWebUser $user
      */
     public function renderDashboard($user = null)
     {

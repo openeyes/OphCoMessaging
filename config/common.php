@@ -2,14 +2,18 @@
 return array(
     'params' => array(
         'dashboard_items' => array(
+
             array(
-                'api' => 'OphCoMessaging'
+                'module' => 'OphCoMessaging',
+                // default action is the 'renderDashboard' if 'actions' array is  not set
+                'actions' => array(
+                    'getInboxMessages',
+                    'getSentMessages',
+                 )
             ),
             array(
-                'demo' => array(
-                    'title' => "Demo Dashboard Widget",
-                    'content' => "<i>This is a placeholder widget to allow users to try out the drag and drop functionality</i>"
-                )
+                'title' => "Demo Dashboard Widget",
+                'content' => "<i>This is a placeholder widget to allow users to try out the drag and drop functionality</i>"
             )
 
         )
