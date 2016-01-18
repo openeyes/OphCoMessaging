@@ -122,7 +122,8 @@ class OphCoMessaging_API extends \BaseAPI
             'title' => "Messages" . ( !$read_check && $dp->totalItemCount ? " [{$dp->totalItemCount}]" : "" ),
             'content' => $inbox_view,
             'options' => array(
-                'js-toggle-open' => isset($_GET['OphCoMessaging_read']) || isset($_GET['OphCoMessaging_from']) || isset($_GET['OphCoMessaging_to']),
+                'container-id' => 'inbox-container',
+                'js-toggle-open' => \Yii::app()->request->cookies->contains('inbox-container-state') ? (bool)\Yii::app()->request->cookies['inbox-container-state']->value : false,
             )
         );
     }
@@ -203,7 +204,8 @@ class OphCoMessaging_API extends \BaseAPI
             'title' => 'Sent Messages',
             'content' => $inbox_view,
             'options' => array(
-                'js-toggle-open' => isset($_GET['OphCoMessaging_sent_from']) || isset($_GET['OphCoMessaging_sent_to']),
+                'container-id' => 'sent-container',
+                'js-toggle-open' => \Yii::app()->request->cookies->contains('sent-container-state') ? (bool)\Yii::app()->request->cookies['sent-container-state']->value : false,
             )
         );
     }
