@@ -106,6 +106,9 @@ class OphCoMessaging_API extends \BaseAPI
             $params[':to'] = \Helper::convertNHS2MySQL($to);
         }
 
+        $criteria->addCondition('event.deleted = 0');
+        $criteria->addCondition('episode.deleted = 0');
+
         $criteria->params = $params;
 
         $dp = new \CActiveDataProvider('OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
@@ -117,7 +120,7 @@ class OphCoMessaging_API extends \BaseAPI
                 )
             ));
 
-        $messages = Element_OphCoMessaging_Message::model()->findAll($criteria);
+        $messages = Element_OphCoMessaging_Message::model()->with(array('event'))->findAll($criteria);
 
         \Yii::app()->getAssetManager()->registerCssFile('module.css', 'application.modules.OphCoMessaging.assets.css');
         
@@ -188,6 +191,9 @@ class OphCoMessaging_API extends \BaseAPI
             $criteria->addCondition('DATE(t.created_date) <= :to');
             $params[':to'] = \Helper::convertNHS2MySQL($to);
         }
+
+        $criteria->addCondition('event.deleted = 0');
+        $criteria->addCondition('episode.deleted = 0');
 
         $criteria->params = $params;
 
