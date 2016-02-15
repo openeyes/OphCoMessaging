@@ -27,7 +27,7 @@ class OphCoMessaging extends OpenEyesPage
             'xpath' => "//div[contains(@class, 'alert-box') and contains(@class, 'error')]",
         ),
         'sidebar' => array(
-            'xpath' => "//*[@class='episode-title']"
+            'xpath' => "//div[contains(@class, 'panel') and contains(@class, 'specialty')]"
         ),
         'newEventButton' => array(
             'xpath' => "//button[contains(@class, 'addEvent') and contains(@class, 'enabled')]"
@@ -67,6 +67,9 @@ class OphCoMessaging extends OpenEyesPage
         ),
         'dashboard' => array(
             'xpath' => "//div[@id='inbox-table']"
+        ),
+        'latestEvent' => array(
+            'xpath' => "//*[@class='box patient-info episode-links']/a"
         )
     );
 
@@ -96,6 +99,14 @@ class OphCoMessaging extends OpenEyesPage
     }
 
     /**
+     * @TODO: update PatientContext in core with this method
+     */
+    public function selectLatestEvent() {
+        $this->getElement ( 'latestEvent' )->click ();
+        $this->waitForTitle ( 'Episodes and events' );
+    }
+
+    /**
      * more pragramatic approach to expanding sidebar, which should be in core
      *
      * @TODO: put in core
@@ -107,6 +118,20 @@ class OphCoMessaging extends OpenEyesPage
         if (!$el->hasClass('selected')) {
             $el->click();
         }
+    }
+
+    protected function clickNewEventButton()
+    {
+        $element_name = 'newEventButton';
+
+        $element = $this->getElement($element_name);
+        if (!$element->isVisible()) {
+            $section_expander_xpath = $this->elements[$element_name]['xpath'] . '/ancestor::section//span[contains(@class, \'icon-showhide\')]';
+            $this->getElement('sidebar')->find('xpath', $section_expander_xpath)->click();
+        }
+
+        $element->click();
+
     }
 
     /**
@@ -121,7 +146,7 @@ class OphCoMessaging extends OpenEyesPage
     {
         $this->expandSubspecialty($subspecialty);
         $this->getDriver()->wait(5000, 'window.$ && $.active ==0');
-        $this->getElement('newEventButton')->click();
+        $this->clickNewEventButton();
         $this->getDriver()->wait(5000, 'window.$ && $.active ==0');
         if ($new_event_link = $this->getElement('newEventDialog')->find('xpath', "//*[contains(text(), '{$event_name}')]")) {
             $new_event_link->click();
@@ -193,11 +218,21 @@ class OphCoMessaging extends OpenEyesPage
     }
 
     /**
+     * This should be the same behaviour for every OE page
+     * @TODO: move to core
+     */
+    public function saveEvent() {
+        $this->getElement ( 'save' )->click ();
+    }
+
+    /**
      * @TODO: move into core as basic behaviour for all events
      * @throws BehaviorException
      */
     public function saveAndConfirm()
     {
+        // this resizing should be abstracted/configurable. Think it applies when running headless primarily
+        $this->getDriver()->resizeWindow(1280,800);
         $this->saveEvent();
         if (!$this->hasEventSaved()) {
             throw new BehaviorException("Event not saved");

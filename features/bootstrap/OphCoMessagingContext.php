@@ -24,7 +24,7 @@ class OphCoMessagingContext extends PageObjectContext
     /**
      * @Given /^I select Create Message$/
      */
-    public function iSelectCreateOperationNote() {
+    public function iSelectCreateMessage() {
 
         $message = $this->getPage ( 'OphCoMessaging' );
         $message->createMessage();
@@ -224,6 +224,18 @@ class OphCoMessagingContext extends PageObjectContext
         $url = $this->bookmarks[$arg1];
         $message = $this->getPage("OphCoMessaging");
         $message->checkForLinkToUrl($url);
+    }
+
+    /**
+     * @Then /^I select the Latest Event Page$/
+     */
+    public function iSelectTheLatestEvent()
+    {
+        /**
+         * @var OphCoMessaging
+         */
+        $message = $this->getPage("OphCoMessaging");
+        $message->selectLatestEvent();
     }
 
 }

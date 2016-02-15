@@ -9,7 +9,7 @@ Feature: Messaging
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select the Latest Event Page
 
     And I add a New Event "Message" for "Glaucoma"
 
