@@ -134,8 +134,8 @@ class OphCoMessaging_API extends \BaseAPI
             'title' => "Messages" . ( !$read_check && $dp->totalItemCount ? " [{$dp->totalItemCount}]" : "" ),
             'content' => $inbox_view,
             'options' => array(
-                'container-id' => 'inbox-container',
-                'js-toggle-open' => \Yii::app()->request->cookies->contains('inbox-container-state') ? (bool)\Yii::app()->request->cookies['inbox-container-state']->value : false,
+                'container-id' => \Yii::app()->user->id.'-inbox-container',
+                'js-toggle-open' => \Yii::app()->request->cookies->contains(\Yii::app()->user->id.'-inbox-container-state') ? (bool)\Yii::app()->request->cookies[\Yii::app()->user->id.'-inbox-container-state']->value : false,
             )
         );
     }
@@ -219,8 +219,8 @@ class OphCoMessaging_API extends \BaseAPI
             'title' => 'Sent Messages',
             'content' => $inbox_view,
             'options' => array(
-                'container-id' => 'sent-container',
-                'js-toggle-open' => \Yii::app()->request->cookies->contains('sent-container-state') ? (bool)\Yii::app()->request->cookies['sent-container-state']->value : false,
+                'container-id' => \Yii::app()->user->id.'-sent-container',
+                'js-toggle-open' => \Yii::app()->request->cookies->contains(\Yii::app()->user->id.'-sent-container-state') ? (bool)\Yii::app()->request->cookies[\Yii::app()->user->id.'-sent-container-state']->value : false,
             )
         );
     }
