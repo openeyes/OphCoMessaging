@@ -129,13 +129,30 @@ class OphCoMessaging_API extends \BaseAPI
                             'dp' => $dp,
                             'read_check' => $read_check
                         ),true);
+        
+        $is_open = ($read_check && $dp->totalItemCount > 0) ? true : false;
+        
+        $cookie_name = \Yii::app()->user->id.'-inbox-container-state';
+        
+        if( \Yii::app()->request->cookies->contains($cookie_name) ){
+            
+            //unread messages
+            if(!$read_check){
+                //always open the widget if there are unread messages
+                $is_open = $dp->totalItemCount > 0 ? true : (bool)\Yii::app()->request->cookies[$cookie_name]->value;
+            } else {
+                // read messages
+                $is_open = (bool)\Yii::app()->request->cookies[$cookie_name]->value;
+            }
+        }
+        \Yii::app()->request->cookies[$cookie_name] = new \CHttpCookie($cookie_name, (int)$is_open);
 
         return array(
             'title' => "Messages" . ( !$read_check && $dp->totalItemCount ? " [{$dp->totalItemCount}]" : "" ),
             'content' => $inbox_view,
             'options' => array(
                 'container-id' => \Yii::app()->user->id.'-inbox-container',
-                'js-toggle-open' => \Yii::app()->request->cookies->contains(\Yii::app()->user->id.'-inbox-container-state') ? (bool)\Yii::app()->request->cookies[\Yii::app()->user->id.'-inbox-container-state']->value : false,
+                'js-toggle-open' => $is_open,
             )
         );
     }
