@@ -1,3 +1,10 @@
+# DEPRECATED
+As of 22/03/2016, this module has been merged into the openeyes master repository. Messaging will ship as a default feature from openeyes version 1.13 onwards
+
+
+
+
+---------
 Messaging
 =========
 
