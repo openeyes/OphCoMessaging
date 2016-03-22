@@ -15,17 +15,28 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class m151115_100538_add_message_read_status extends CDbMigration
+class m160113_111638_mark_comment_read extends CDbMigration
 {
 	public function up()
 	{
-    $this->addColumn('et_ophcomessaging_message', 'marked_as_read', "tinyint(1) unsigned NOT NULL DEFAULT '0'");
-    $this->addColumn('et_ophcomessaging_message_version', 'marked_as_read', "tinyint(1) unsigned NOT NULL DEFAULT '0'");
+		$this->addColumn('ophcomessaging_message_comment', 'marked_as_read', 'boolean DEFAULT false NOT NULL');
+		$this->addColumn('ophcomessaging_message_comment_version', 'marked_as_read', 'boolean DEFAULT false NOT NULL');
 	}
 
 	public function down()
 	{
-    $this->dropColumn('et_ophcomessaging_message', 'marked_as_read');
-    $this->dropColumn('et_ophcomessaging_message_version', 'marked_as_read');
+		$this->dropColumn('ophcomessaging_message_comment', 'marked_as_read');
+		$this->dropColumn('ophcomessaging_message_comment_version', 'marked_as_read');
 	}
+
+	/*
+	// Use safeUp/safeDown to do migration with transaction
+	public function safeUp()
+	{
+	}
+
+	public function safeDown()
+	{
+	}
+	*/
 }

@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /** OphCoMessaging module styles */
 /**
  * OpenEyes
@@ -19,21 +20,56 @@
 /* line 18, ../sass/components/_event.scss */
 .event .event-content {
   border-color: #86cdff;
-  background-image: url('../img/watermark.png?1447169116');
+  background-image: url('../img/watermark.png?1450171523');
 }
 /* line 22, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1447169532');
+  background-image: url('../img/medium.png?1450177641');
+}
+
+/* line 27, ../sass/components/_event.scss */
+.urgent {
+  color: #f33;
+}
+
+/* line 31, ../sass/components/_event.scss */
+.comment {
+  font-style: italic;
 }
 
 /* line 1, ../sass/components/_inbox.scss */
+#inbox-table {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+/* line 5, ../sass/components/_inbox.scss */
 #inbox-table td {
   vertical-align: top;
 }
 
-/* line 5, ../sass/components/_inbox.scss */
-#inbox-table .priority {
-  color: #f00;
-  font-weight: bold;
-  text-align: center;
+/* line 9, ../sass/components/_inbox.scss */
+#inbox-table span.priority {
+  color: #f33;
+}
+
+/* line 13, ../sass/components/_inbox.scss */
+#inbox-table .date {
+  white-space: nowrap;
+}
+
+/* line 17, ../sass/components/_inbox.scss */
+#inbox-table .summary {
+  font-size: 0.8em;
+}
+
+/* line 2, ../sass/components/_search.scss */
+#grid_header_form label {
+  display: inline-block;
+}
+/* line 5, ../sass/components/_search.scss */
+#grid_header_form input {
+  display: inline;
+  width: auto;
+  margin-left: 5px;
 }

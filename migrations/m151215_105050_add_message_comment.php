@@ -15,17 +15,23 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class m151115_100538_add_message_read_status extends CDbMigration
+
+class m151215_105050_add_message_comment extends OEMigration
 {
 	public function up()
 	{
-    $this->addColumn('et_ophcomessaging_message', 'marked_as_read', "tinyint(1) unsigned NOT NULL DEFAULT '0'");
-    $this->addColumn('et_ophcomessaging_message_version', 'marked_as_read', "tinyint(1) unsigned NOT NULL DEFAULT '0'");
+        $this->createOETable('ophcomessaging_message_comment', array(
+            'id' => 'pk',
+            'comment_text' => 'text DEFAULT \'\' NOT NULL',
+            'element_id' => 'int(10) unsigned NOT NULL',
+            'KEY `ophcomessaging_message_comment_element_id_fk` (`element_id`)',
+            'CONSTRAINT `ophcomessaging_message_comment_element_id_fk` FOREIGN KEY (`element_id`) REFERENCES `et_ophcomessaging_message` (`id`)'
+        ), true);
 	}
 
 	public function down()
 	{
-    $this->dropColumn('et_ophcomessaging_message', 'marked_as_read');
-    $this->dropColumn('et_ophcomessaging_message_version', 'marked_as_read');
+		$this->dropOETable('ophcomessaging_message_comment', true);
 	}
+
 }

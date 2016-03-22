@@ -2,8 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -12,8 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -60,6 +58,11 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 		return 'et_ophcomessaging_message';
 	}
 
+
+    protected $errorExceptions = array(
+        'OEModule_OphCoMessaging_models_Element_OphCoMessaging_Message_for_the_attention_of_user_id' => 'fao-field'
+    );
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -77,15 +80,16 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 	 */
 	public function relations()
 	{
-		return array(
-			'element_type' => array(self::HAS_ONE, 'ElementType', 'id','on' => "element_type.class_name='".get_class($this)."'"),
-			'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'for_the_attention_of_user' => array(self::BELONGS_TO, 'User', 'for_the_attention_of_user_id'),
-			'message_type' => array(self::BELONGS_TO, 'OEModule\\OphCoMessaging\\models\\OphCoMessaging_Message_MessageType', 'message_type_id'),
-		);
+            return array(
+                'element_type'              => array(self::HAS_ONE, 'ElementType', 'id','on' => "element_type.class_name='".get_class($this)."'"),
+                'comments'                  => array(self::HAS_MANY, 'OEModule\\OphCoMessaging\\models\\OphCoMessaging_Message_Comment', 'element_id'),
+                'eventType'                 => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
+                'event'                     => array(self::BELONGS_TO, 'Event', 'event_id'),
+                'user'                      => array(self::BELONGS_TO, 'User', 'created_user_id'),
+                'usermodified'              => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+                'for_the_attention_of_user' => array(self::BELONGS_TO, 'User', 'for_the_attention_of_user_id'),
+                'message_type'              => array(self::BELONGS_TO, 'OEModule\\OphCoMessaging\\models\\OphCoMessaging_Message_MessageType', 'message_type_id'),
+            );
 	}
 
 	/**
@@ -97,10 +101,11 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 			'id' => 'ID',
 			'event_id' => 'Event',
 			'for_the_attention_of_user_id' => 'For the attention of',
-			'message_type_id' => 'Message Type',
+			'message_type_id' => 'Type',
 			'urgent' => 'Urgent',
 			'marked_as_read' => 'Mark as read',
-			'message_text' => 'Message Text',
+			'message_text' => 'Text',
+            'comment_text' => 'Comment',
 		);
 	}
 
@@ -131,12 +136,11 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
         return $this->event->event_date;
     }
 
-
-
-	protected function afterSave()
-	{
-
-		return parent::afterSave();
-	}
+    /**
+     * Info Text set based on the current attributes
+     */
+    public function getInfotext()
+    {
+        return $this->marked_as_read ? "read" : "unread";
+    }
 }
-?>

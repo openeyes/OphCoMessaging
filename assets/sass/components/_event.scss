@@ -23,3 +23,11 @@
 		background-image: image-url("medium.png");
 	}
 }
+
+.urgent {
+  color: $oe-ophcomessaging-urgent-color;
+}
+
+.comment {
+  font-style: italic;
+}
